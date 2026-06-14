@@ -1,0 +1,22 @@
+# DRAFT — 아직 Elnath에 등록 안 됨. Elnath 준비되면 그쪽 scheduled_tasks.yaml로 옮긴다.
+# 스키마는 elnath-clean/internal/scheduler/task_tools.go 기준으로 작성됨.
+scheduled_tasks:
+  - name: esfera-nightly-research
+    type: research                     # Elnath의 autoresearch 루프로 라우팅 (가설→실험→평가→위키)
+    prompt: |
+      Esfera 야간 리서치 라운드. research/backlog.md에서 주제를 골라
+      (2 grounded + 1 wildcard), 가설→실험→평가를 돌리고, 결과를 랩노트로 정리하라.
+    interval: 24h
+    daily_at: "02:00"                  # 새벽 무인 실행
+    quiet_hours: "23:00-08:00"         # 조용시간 — 발송은 끝나고
+    wake_agent: true
+    delivery_targets:
+      - telegram                       # 아침 보고
+    policy:
+      reason: "Esfera nightly autonomous research round; morning summary to owner."
+      max_runs_per_day: 1              # 예산 캡 (횟수)
+      max_consecutive_failures: 3      # 연속 실패 시 정지
+    # NOTE: external delivery(telegram)가 붙은 항목은 Elnath가 자동으로
+    #   disabled + pending_owner_approval 로 만든다. 너가 `/schedule enable` 해야 켜짐.
+    #   = "없을 때 무인, 발송은 네 승인" 모델 그대로.
+    # NOTE: 비용 캡은 여기 yaml이 아니라 research 워크플로 설정에 있음 (runtime/README.md 참고).
