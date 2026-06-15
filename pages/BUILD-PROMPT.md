@@ -6,6 +6,18 @@ Use this to have claude.ai build Esfera pages from the design system. **Workflow
 - A page brief: e.g. https://raw.githubusercontent.com/StelloJae/esfera/main/pages/landing.brief.md
 - Content pages (posts/lab notes): the markdown content itself IS the brief.
 
+## How to use on claude.ai (verified, June 2026)
+
+claude.ai builds pages as **Artifacts** — live HTML that renders in a side panel and can be shared via a claude.ai link (viewers need no account). One page = one artifact. Two ways to supply the design system:
+
+**A. One-shot (most reliable).** In a normal chat, paste the prompt below **+ the full DESIGN.md + the page brief in ONE message** → you get an HTML artifact. The whole system stays in-context, so no rule is missed. Re-paste per page (tedious but faithful).
+
+**B. A Project (convenient for many pages).** Create a Claude **Project** → put the prompt below (+ the NON-NEGOTIABLE rules) in the Project's **custom instructions**, and upload DESIGN.md to **Project knowledge**. Then each chat = just a page brief → an artifact.
+- ⚠️ Project knowledge is retrieved via **RAG** — it may not surface every design rule for every request. Keep the non-negotiable rules in the **custom instructions** (always in-context) and **eyeball each artifact** against them.
+- ⚠️ Upload DESIGN.md as **`.txt` or `.html`** (Projects accept TXT/HTML, not MD) — or just paste it.
+
+Recommendation: **B** for convenience, with the non-negotiables in custom instructions + a quick visual check of each page.
+
 ---
 
 ## Prompt (copy from here)
