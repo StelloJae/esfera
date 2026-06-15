@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "3200", "--directory", "/Users/stello/esfera"],
       "port": 3200
+    },
+    {
+      "name": "direction-e",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3205", "--directory", "/Users/stello/esfera/design-lab/e"],
+      "port": 3205
     }
   ]
 }
