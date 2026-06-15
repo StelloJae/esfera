@@ -1,16 +1,21 @@
 ---
-version: "1.0"
+version: "1.1"
 name: "Esfera Research Design System"
 description: >
   Canonical design-system spec for Esfera Research — a warm scholarly editorial
-  base (Fraunces + Newsreader + IBM Plex Mono) plus a bold Archivo Black poster
-  hero. One warm accent, rationed. Fluid viewport-proportional scaling.
+  base (Fraunces + Newsreader + IBM Plex Mono) plus a bold Archivo Black knockout
+  poster pattern. One warm accent, rationed. Fluid viewport-proportional scaling.
   Light/dark auto with manual override. Zero horizontal scroll, zero shadows.
+
+  This DESIGN.md is the reusable SYSTEM (the HOW). It is meant to be used WITH
+  a per-page content brief that supplies copy and intent (the WHAT). For content
+  pages (posts, lab notes), the markdown content itself serves as the page brief.
+  No copy, file names, or page-specific decisions live in this document.
 
 colors:
   light:
     bg:        { value: "#f6f1e8", role: "Page background — warm cream paper" }
-    bg-alt:    { value: "#efe9db", role: "Alternate surface — slightly cooler parchment; used for Elnath card" }
+    bg-alt:    { value: "#efe9db", role: "Alternate surface — slightly cooler parchment; callout cards" }
     surface:   { value: "#f9f5ef", role: "Elevated surface — lightest warm white; reserved for future modals/tooltips" }
     ink:       { value: "#2a241d", role: "Primary text — near-black warm brown" }
     ink-mid:   { value: "#5a4e43", role: "Secondary text — body prose, rail links" }
@@ -35,7 +40,7 @@ typography:
     lineHeight: 0.93
     letterSpacing: "-0.025em"
     textTransform: uppercase
-    role: "Poster hero headline only — never used elsewhere"
+    role: "Knockout poster headline only — never used elsewhere"
   display:
     fontFamily: '"Fraunces", Georgia, "Times New Roman", serif'
     fontSize: "clamp(1.35rem, 2.6vw, 2.6rem)"
@@ -181,12 +186,14 @@ components:
       padding: "1.1rem 0"
       hidden-at-mobile: "rail-sep, rail-push, rail-stamp"
       railnav-mobile: "flex-direction: row, gap: 0 1.1rem, border-top: 1px solid {colors.rule}"
-  poster-hero:
+  knockout-poster:
     description: >
-      Full-width opening section of the landing page. Theme-aware background
-      (var(--bg) — warm cream in light, warm charcoal in dark — never a forced dark band).
-      Archivo Black uppercase headline broken into exactly three lines. Two lines
-      use solid accent fill with knockout text. Faint decorative sphere behind type.
+      Full-width opening section used on pages that open with a bold brand
+      statement (typically one such page per site). Theme-aware background
+      (var(--bg) — warm cream in light, warm charcoal in dark — never a forced
+      dark band). Archivo Black uppercase headline of 2–4 lines; 1–2 lines MAY
+      carry the accent knockout fill. Headline copy and which lines receive fill
+      are determined by the page brief, not this spec.
     element: "section.hero-band"
     background: "{colors.bg} via var(--hero-bg)"
     padding: "clamp(3rem, 7vw, 6.5rem) {spacing.pad-side} clamp(2.5rem, 5vw, 5rem)"
@@ -201,19 +208,27 @@ components:
       overflow-wrap: normal
       word-break: normal
       max-width: "100%"
-      structure:
-        line1: 'span.hl — "A LAB WITH" — plain ink, white-space: nowrap'
-        line2: 'span.hl > span.hero-accent-fill — "NO" — KNOCKOUT: accent fill + color: var(--bg)'
-        line3: 'span.hl > span.hero-accent-fill — "RESEARCHERS." — KNOCKOUT: accent fill + color: var(--bg)'
+      structure: >
+        2–4 span.hl blocks (display: block; white-space: nowrap).
+        Lines designated for knockout fill in the page brief are wrapped in
+        span.hero-accent-fill. Plain lines remain bare span.hl in var(--ink).
+        The count and fill assignment come from [page brief].
       knockout-rule: >
         hero-accent-fill uses background: var(--accent) and color: var(--bg).
         The text color equals the page surface color so letters appear as negative
         space cut through the orange fill. This is NEVER black — it must equal var(--bg).
         padding: 0.02em 0.1em 0.04em; box-decoration-break: clone.
-      korean-variant:
-        line1: '"연구원이 없는" — plain ink'
-        line2: '"연구소." — accent fill knockout; word-break: keep-all'
+      line-count-examples:
+        landing-style: "3 lines / 2 filled (bold multi-word assertion)"
+        about-style: "2 lines / 1 filled (softer single emphasis)"
+        error-style: "1 line / 1 filled (stark single statement)"
+      clamp-calibration: >
+        The clamp floor (2.2rem) must be verified against the page brief: the
+        longest word in the poster headline must fit within the usable column at
+        320–390px without horizontal overflow, and must never auto-hyphenate.
+        Lower the floor if needed; do not relax hyphens: none.
     sphere-watermark:
+      description: "Optional decorative element. Include when the page benefits from brand texture; omit on minimal pages."
       position: "absolute, right: -6%, top: 50%, translateY(-50%)"
       opacity: 0.06
       color: "{colors.accent} via currentColor"
@@ -223,6 +238,7 @@ components:
       pointer-events: none
       shape: "5-stroke engraved globe (outer circle + 4 ellipses at varying opacities)"
     lede:
+      description: "Optional italic paragraph below headline. Copy from [page brief]."
       structure: "div.hero-lede-wrap with border-top: 1px solid var(--rule), marginTop: clamp(1.75rem, 3.5vw, 3rem)"
       font: "{typography.body}"
       fontSize: "clamp(0.92rem, 1.5vw, 1.1rem)"
@@ -231,7 +247,7 @@ components:
       maxWidth: "58ch"
       em: "font-style: normal, color: {colors.ink}"
     accent-bar:
-      description: "3px accent-colored horizontal rule separating hero from editorial body"
+      description: "3px accent-colored horizontal rule separating poster from editorial body"
       height: "3px"
       background: "{colors.accent}"
       width: "100%"
@@ -244,9 +260,13 @@ components:
     font: "{typography.pull-quote}"
     color: "{colors.ink}"
     em: "font-style: normal, font-weight: 600, color: {colors.accent}"
-  elnath-card:
-    description: "Flagship callout card; bg-alt fill, accent top border, hairline other sides"
-    element: "div.elnath-card"
+  callout-card:
+    description: >
+      High-priority callout card. bg-alt fill, 2px accent top border, 1px rule
+      on left/right/bottom. No radius. Use for one high-priority callout per
+      section. The landing page's flagship/Elnath block is the canonical example
+      of this pattern.
+    element: "div.callout-card"
     background: "{colors.bg-alt}"
     borderTop: "2px solid {colors.accent}"
     borderLeft: "1px solid {colors.rule}"
@@ -261,6 +281,101 @@ components:
       color: "{colors.ink-mid}"
       lineHeight: 1.76
     em: "font-style: italic, color: {colors.accent}"
+  post-index-row:
+    description: >
+      Archive list row for post/paper indexes. Minimal horizontal layout:
+      mono date on the left, Fraunces title in the center, optional tag pills
+      on the right. Separated from adjacent rows by a hairline rule.
+    element: "li.post-index-row"
+    borderBottom: "1px solid {colors.rule}"
+    padding: "0.75rem 0"
+    display: "grid, grid-template-columns: 7ch 1fr auto, align-items: baseline, gap: 0 1.25rem"
+    date:
+      font: "{typography.meta}"
+      color: "{colors.ink-faint}"
+      whiteSpace: nowrap
+    title:
+      fontFamily: '"Fraunces", Georgia, "Times New Roman", serif'
+      fontSize: "clamp(0.95rem, 1.6vw, 1.15rem)"
+      fontWeight: 600
+      fontVariationSettings: '"opsz" 48'
+      color: "{colors.ink}"
+      hover-color: "{colors.accent}"
+    tags:
+      layout: "flex, gap: 0.35rem, flex-wrap: wrap"
+  tag-pill:
+    description: >
+      Small category or tag chip. Mono text, hairline border or bg-alt fill.
+      Used inline in post-index-row and on article pages.
+    element: "span.tag-pill"
+    fontFamily: '"IBM Plex Mono", "Courier New", monospace'
+    fontSize: "0.58rem"
+    fontWeight: 500
+    letterSpacing: "0.12em"
+    textTransform: uppercase
+    color: "{colors.ink-faint}"
+    border: "1px solid {colors.rule}"
+    padding: "0.15em 0.45em"
+    background: "transparent (default) or {colors.bg-alt} for active/selected state"
+    hoverColor: "{colors.accent}"
+    hoverBorder: "1px solid {colors.accent}"
+  paper-card:
+    description: >
+      Card for a published research paper in a listing. Title in Fraunces,
+      authors/date in mono, abstract excerpt in Newsreader, prominent link.
+    element: "div.paper-card"
+    borderTop: "1px solid {colors.rule}"
+    padding: "clamp(1.2rem, 2vw, 1.8rem) 0"
+    title:
+      fontFamily: '"Fraunces", Georgia, "Times New Roman", serif'
+      fontSize: "clamp(1.05rem, 1.8vw, 1.4rem)"
+      fontWeight: 600
+      fontVariationSettings: '"opsz" 48'
+      color: "{colors.ink}"
+      marginBottom: "0.4rem"
+    meta-line:
+      font: "{typography.meta}"
+      color: "{colors.ink-faint}"
+      marginBottom: "0.65rem"
+      separator: "· colored {colors.rule}"
+    abstract:
+      fontFamily: '"Newsreader", Georgia, "Times New Roman", serif'
+      fontSize: "clamp(0.88rem, 1.4vw, 1rem)"
+      color: "{colors.ink-mid}"
+      lineHeight: 1.72
+      maxLines: "3–4 lines (use -webkit-line-clamp: 3)"
+      marginBottom: "0.75rem"
+    link:
+      font: "{typography.meta}"
+      color: "{colors.accent}"
+      borderBottom: "1px solid color-mix(in srgb, var(--accent) 35%, transparent)"
+      hover: "border-color: {colors.accent}"
+  empty-state:
+    description: >
+      Minimal error or empty-content pattern. Used for 404 pages, empty archive
+      results, or any page where no primary content exists. Centered vertically
+      in the main column; copy from [page brief].
+    element: "div.empty-state"
+    textAlign: center
+    paddingTop: "clamp(4rem, 10vw, 8rem)"
+    heading:
+      font: "{typography.poster}"
+      fontSize: "clamp(2.2rem, 5.8vw, 9rem)"
+      color: "{colors.accent} (knockout fill on bg, or plain accent — page brief decides)"
+      note: "May use the knockout-poster pattern for a single filled line, or plain accent ink."
+    body:
+      fontFamily: '"Newsreader", Georgia, "Times New Roman", serif'
+      fontSize: "clamp(0.95rem, 1.5vw, 1.1rem)"
+      color: "{colors.ink-mid}"
+      maxWidth: "42ch"
+      marginInline: auto
+      marginTop: "clamp(1rem, 2vw, 1.5rem)"
+    link:
+      font: "{typography.meta}"
+      color: "{colors.accent}"
+      display: "block"
+      marginTop: "clamp(1.25rem, 2.5vw, 2rem)"
+      letterSpacing: "0.1em"
   section-label:
     description: "Mono eyebrow label above sections (h2.label)"
     font: "{typography.label}"
@@ -276,7 +391,7 @@ components:
     borderFirst: "border-top: 1px solid {colors.rule}"
     padding: "0.85rem 0"
     strong: "font-family: {typography.body.fontFamily}, font-weight: 600, color: {colors.ink}"
-  studying-list:
+  bullet-list:
     description: "Em-dash bullet list; accent em-dash, serif weight 300"
     gap: "0.9rem"
     bullet: 'content: "—", color: {colors.accent}, font-family: Fraunces, weight: 300'
@@ -353,20 +468,28 @@ components:
 
 ## Overview
 
-Esfera Research is a warm scholarly editorial brand with a bold poster-hero
-opening. The brand operates in two registers that share one palette:
+This DESIGN.md is the reusable **system** (the HOW). It defines tokens, patterns,
+and composition rules that apply to every Esfera page. It is always used together
+with a **per-page content brief** that supplies copy, intent, and page-specific
+decisions (the WHAT). For content pages (posts, lab notes), the markdown content
+itself is the page brief. No page copy, file names, or page-specific decisions
+live in this document.
+
+Esfera Research is a warm scholarly editorial brand with a bold poster opening
+available as an optional pattern. The brand operates in two registers that share
+one palette:
 
 1. **Scholarly editorial register** — Fraunces display headings, Newsreader
    body text, IBM Plex Mono for labels and metadata. Used on every page except
-   the hero opening.
-2. **Poster hero register** — Archivo Black, huge, uppercase, two words on solid
-   accent fill with knockout type. Used exclusively in the landing page opening
-   band.
+   when the knockout poster pattern is active.
+2. **Knockout poster register** — Archivo Black, huge, uppercase, with 1–2 lines
+   on solid accent fill with knockout type. Used on pages that open with a bold
+   brand statement; typically one such page per site.
 
 Both registers share one warm accent: **Aldebaran amber**. The name is earned —
 Aldebaran is the warm orange giant of Taurus, the same constellation as Elnath
-(the star the flagship project is named after; Esfera means "celestial sphere").
-The accent appears as `#d5560a` in light mode and `#f58a26` in dark mode.
+(Esfera means "celestial sphere"). The accent appears as `#d5560a` in light mode
+and `#f58a26` in dark mode.
 
 No second accent exists. No shadows exist. No gradients exist. Decoration is
 essentially zero. Depth is communicated through hairline rules, solid fills
@@ -386,7 +509,7 @@ viewport at every width, with no horizontal scroll possible.
 | Token        | Value      | Role                                                          |
 |-------------|-----------|---------------------------------------------------------------|
 | `--bg`      | `#f6f1e8` | Page background — warm cream paper                            |
-| `--bg-alt`  | `#efe9db` | Alternate surface — slightly cooler parchment; Elnath card    |
+| `--bg-alt`  | `#efe9db` | Alternate surface — slightly cooler parchment; callout cards  |
 | `--surface` | `#f9f5ef` | Elevated surface — lightest warm white; reserved              |
 | `--ink`     | `#2a241d` | Primary text — near-black warm brown                          |
 | `--ink-mid` | `#5a4e43` | Secondary text — body prose, nav links                        |
@@ -426,8 +549,8 @@ no-FOUC inline script must appear in `<head>` before any CSS on every page:
 <script>(function(){var t=localStorage.getItem('esfera-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
 ```
 
-The hero band uses `--hero-bg: var(--bg)` — it inherits the theme surface, not
-a forced dark override. Both modes render correctly without any hero-specific
+The poster hero band uses `--hero-bg: var(--bg)` — it inherits the theme surface,
+not a forced dark override. Both modes render correctly without any hero-specific
 color tokens.
 
 ---
@@ -440,7 +563,7 @@ Four typefaces. One each for four distinct jobs. No substitution.
 
 | Family | Variable | Use |
 |--------|----------|-----|
-| Archivo Black | `--f-poster` | Poster hero headline only |
+| Archivo Black | `--f-poster` | Knockout poster headline only |
 | Fraunces | `--f-serif` | Display headings, pull quotes, rail nav, article titles |
 | Newsreader | `--f-body` | All body prose |
 | IBM Plex Mono | `--f-mono` | Labels, metadata, brand name, eyebrows, toggles |
@@ -454,7 +577,7 @@ Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,
 
 | Token | Value | Use |
 |-------|-------|-----|
-| `--hero-poster` | `clamp(2.2rem, 5.8vw, 9rem)` | Poster hero — Archivo Black |
+| `--hero-poster` | `clamp(2.2rem, 5.8vw, 9rem)` | Knockout poster — Archivo Black |
 | `--hero` | `clamp(2.8rem, 6.2vw, 7.5rem)` | (reserved large display) |
 | `--h2-disp` | `clamp(1.35rem, 2.6vw, 2.6rem)` | Display section headings |
 | `--pull-q` | `clamp(1.2rem, 2.2vw, 2rem)` | Pull question |
@@ -463,9 +586,10 @@ Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,
 | post-title | `clamp(2rem, 4.5vw, 4rem)` | Article h1 |
 | blockquote | `clamp(1.05rem, 1.8vw, 1.35rem)` | In-article blockquote |
 
-The clamp floor on `--hero-poster` (2.2rem) is calibrated so "RESEARCHERS."
-(the longest word) fits the available column width at a 390px viewport without
-horizontal overflow.
+The clamp floor on `--hero-poster` (2.2rem) is a starting point. For any given
+page, verify that the longest word in the poster headline fits within the usable
+column at 320–390px without horizontal overflow and never auto-hyphenates. Lower
+the floor if needed.
 
 ### Optical Sizing
 
@@ -508,7 +632,7 @@ mark, brand name, lang toggle, theme toggle, separator, nav links, spacer, stamp
 
 No fixed width — it is the remaining grid fraction after the rail. The column
 must include `min-width: 0` and `overflow-x: hidden` to prevent grid child
-overflow. There is no cap on body prose width on the landing page
+overflow. There is no cap on body prose width on pages that use the full column
 (`--prose-max: none`); article pages cap at `66ch`.
 
 ### Breakpoint
@@ -536,10 +660,10 @@ This system has no shadows and no gradients. Depth is communicated by:
 1. **Hairlines** — `1px solid var(--rule)` for horizontal rules, rail border,
    card borders, section separators.
 2. **Accent rules** — `2px–2.5px solid var(--accent)` for pull-quote left rule,
-   Elnath card top border, title-rule, hero accent bar.
-3. **Fill contrast** — `--bg-alt` on Elnath card creates depth without shadow.
+   callout card top border, title-rule, poster accent bar.
+3. **Fill contrast** — `--bg-alt` on callout cards creates depth without shadow.
 4. **Knockout type** — the deepest "elevation" effect in the system is the
-   poster hero: solid accent fill with text cut through it in the page surface
+   knockout poster: solid accent fill with text cut through it in the page surface
    color. No shadow makes it possible.
 
 Border-radius is `0` everywhere. Do not introduce radius.
@@ -559,11 +683,11 @@ SVG, `1.55rem × 1.55rem`, `stroke: var(--accent)`, `fill: none`,
 <ellipse cx="16" cy="16" rx="12.5" ry="4.6"/>   <!-- equatorial -->
 ```
 
-### Sphere Watermark (hero background)
+### Sphere Watermark (optional poster decoration)
 
 SVG, `640×640` rendered, `viewBox="0 0 700 700"`. Five strokes, two with
 `opacity="0.55"`. Color via `currentColor` set to `var(--accent)`. Global
-`opacity: 0.06` on the element. Positioned absolute inside the hero band
+`opacity: 0.06` on the element. Positioned absolute inside the poster band
 (`right: -6%, top: 50%, translateY(-50%)`), clipped by `overflow: hidden` on
 the band.
 
@@ -588,8 +712,8 @@ The only non-zero radius in the system, and it is decorative only.
 
 Sticky left sidebar. Structure from top to bottom:
 
-1. **Brand block** — sphere mark SVG + "Esfera / Research" in `--f-mono`.
-2. **Lang + theme row** — "EN · 한국어 · ☾ dark" in `--f-mono` 0.6rem.
+1. **Brand block** — sphere mark SVG + brand name in `--f-mono`.
+2. **Lang + theme row** — lang options + theme toggle in `--f-mono` 0.6rem.
    Active lang in `var(--accent)`. Theme toggle: no border, no background;
    hover color is `var(--accent)`.
 3. **Separator** — `1.5rem` wide, `1px` tall, `var(--rule)`.
@@ -598,20 +722,16 @@ Sticky left sidebar. Structure from top to bottom:
 5. **Spacer** — `flex: 1`.
 6. **Stamp** — "Est. 2026" in `--f-mono` uppercase `var(--ink-faint)`.
 
-### Poster Hero
+### Knockout Poster
 
-Applied only to `index.html` (and its Korean equivalent). This component is the
-sole use of Archivo Black.
+Used on pages that open with a bold brand statement (typically one such page per
+site). This pattern is the sole use of Archivo Black.
 
-The headline is always exactly three `span.hl` blocks (`display: block`,
-`white-space: nowrap`):
-- Line 1: `"A LAB WITH"` — plain `var(--ink)` text.
-- Line 2: `"NO"` — wrapped in `span.hero-accent-fill`.
-- Line 3: `"RESEARCHERS."` — wrapped in `span.hero-accent-fill`.
-
-**Korean variant:**
-- Line 1: `"연구원이 없는"` — plain ink (`word-break: keep-all`)
-- Line 2: `"연구소."` — `span.hero-accent-fill`
+The headline consists of 2–4 `span.hl` blocks (`display: block`,
+`white-space: nowrap`). Lines designated for knockout fill (per the page brief)
+are wrapped in `span.hero-accent-fill`; plain lines are bare `span.hl` in
+`var(--ink)`. The number of lines and which receive fill are always determined
+by the page brief, not this spec.
 
 **Knockout rule (non-negotiable):**
 ```css
@@ -627,26 +747,69 @@ The letters read as negative space cut through the amber fill because the text
 color matches the page background. In light mode `var(--bg)` is `#f6f1e8`; in
 dark mode it is `#181410`. The system handles both automatically.
 
-The sphere watermark sits behind the headline at `z-index: 0`; all headline
-elements are at `z-index: 1`.
+The sphere watermark (optional) sits behind the headline at `z-index: 0`; all
+headline elements are at `z-index: 1`.
 
 Below the headline, `div.hero-lede-wrap` has `border-top: 1px solid var(--rule)`
 and contains a single italic paragraph in Newsreader at
 `clamp(0.92rem, 1.5vw, 1.1rem)`, color `var(--ink-mid)`, max-width `58ch`.
+This lede is optional; include only when the page brief calls for one.
 
 A 3px accent bar (`span.hero-accent-bar`, `background: var(--accent)`)
-separates the hero from the editorial body.
+separates the poster from the editorial body.
 
 ### Pull Quote
 
 Left rule, Fraunces italic light, max-width `54ch`. Emphasis within pull text
 uses `font-style: normal; font-weight: 600; color: var(--accent)`.
 
-### Elnath Card
+### Callout Card
 
-`--bg-alt` fill. Border: `2px accent top`, `1px rule left/right/bottom`.
-No radius. The "accent top border, neutral sides" pattern is reserved for the
-flagship card — do not reuse for generic cards.
+`--bg-alt` fill. Border: `2px accent top`, `1px rule left/right/bottom`. No
+radius. Use for one high-priority callout per section. The landing page's
+flagship/Elnath block is the canonical example of this pattern.
+
+### Post Index Row
+
+Archive list row. Three-column grid: mono date (7ch) · Fraunces title (1fr) ·
+optional tag pills (auto). Rows separated by `border-bottom: 1px solid var(--rule)`.
+Date in `--f-mono` `var(--ink-faint)`. Title in Fraunces semi-bold `opsz 48`,
+hover `var(--accent)`. Tags render as `tag-pill` chips.
+
+### Tag Pill
+
+Small category chip. IBM Plex Mono `0.58rem` uppercase `0.12em` letter-spacing,
+`var(--ink-faint)`, `border: 1px solid var(--rule)`, `padding: 0.15em 0.45em`.
+Active or selected state: `background: var(--bg-alt)`. Hover: `color: var(--accent)`,
+`border-color: var(--accent)`.
+
+### Paper Card
+
+For published research paper listings. Sections from top to bottom:
+
+- **Title** — Fraunces semi-bold `clamp(1.05rem, 1.8vw, 1.4rem)` `opsz 48`,
+  `var(--ink)`.
+- **Meta line** — mono `0.62rem` `var(--ink-faint)`, fields separated by `·`.
+  Content from [page brief]: authors, date, venue, tags.
+- **Abstract excerpt** — Newsreader `clamp(0.88rem, 1.4vw, 1rem)`,
+  `var(--ink-mid)`, line-height `1.72`, clamped to 3–4 lines via
+  `-webkit-line-clamp: 3`.
+- **Link** — mono `0.62rem` `var(--accent)`, underline via
+  `border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent)`,
+  hover brings to full accent.
+
+Separated from adjacent cards by `border-top: 1px solid var(--rule)`.
+
+### Empty State / 404
+
+Minimal pattern for error or empty-content pages. Centered vertically in the
+main column. Copy (heading, body, link label) comes from the page brief.
+
+- **Heading** — may use the knockout poster pattern for a single filled line, or
+  plain `var(--accent)` ink — page brief decides.
+- **Body** — Newsreader `clamp(0.95rem, 1.5vw, 1.1rem)`, `var(--ink-mid)`,
+  max-width `42ch`, centered.
+- **Link** — mono `var(--accent)`, block-level, `margin-top: clamp(1.25rem, 2.5vw, 2rem)`.
 
 ### Section Labels (Eyebrows)
 
@@ -663,14 +826,14 @@ letter-spacing `-0.018em`, line-height `1.2`, `var(--ink)`.
 Ruled list: each `<li>` has `padding: 0.85rem 0`, `border-bottom: 1px solid var(--rule)`. First item also has `border-top`. Bold terms inside use Fraunces
 semi-bold weight-600, inline, `var(--ink)`.
 
-### Studying / Bullet List
+### Bullet List
 
 Em-dash bullets. The `::before` pseudo-element renders `"—"` in
 `var(--accent)`, Fraunces weight-300. Content `padding-left: 1.4rem`.
 
 ### Article Layout
 
-Distinct from the landing page. Rail identical. Main column:
+Rail identical to all other pages. Main column:
 `padding: var(--pad-top) var(--pad-side) calc(var(--pad-top) × 1.6)`.
 
 Inside `article.post` (`max-width: 66ch`):
@@ -686,7 +849,7 @@ Inside `article.post` (`max-width: 66ch`):
 - **blockquote** — Fraunces light italic `clamp(1.05rem, 1.8vw, 1.35rem)`
   `opsz 72`, `border-left: 2.5px solid var(--accent)`, `padding-left: 1.25rem`.
   Emphasis within: `font-style: normal; font-weight: 600; color: var(--accent)`.
-- **ul** — em-dash bullets, same as studying list.
+- **ul** — em-dash bullets, same as bullet list.
 - **Links** — `color: var(--accent)`,
   `border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent)`,
   hover brings border to full accent.
@@ -706,7 +869,7 @@ preceded by a `0.32rem` accent dot.
 ### Do's
 
 - **Do use `var(--accent)` for every accent need** — the sphere mark stroke,
-  the hero fill, left rules, title rules, bullet em-dashes, link colors,
+  the poster fill, left rules, title rules, bullet em-dashes, link colors,
   hover states, focus outlines. One color, many applications.
 - **Do write every measurement in `rem`** — even `0.32rem` for the sig dot.
   Nothing in `px` after the root font-size declaration.
@@ -716,8 +879,8 @@ preceded by a `0.32rem` accent dot.
   or `<style>` on every page.**
 - **Do set `hyphens: none; overflow-wrap: normal; word-break: normal` on the
   poster headline** — the clamp already prevents overflow; browser auto-hyphenation
-  would break "RESEARCHERS." mid-word.
-- **Do use `white-space: nowrap` on each `.hl` span** — the three headline lines
+  would break any long word mid-word.
+- **Do use `white-space: nowrap` on each `.hl` span** — poster headline lines
   are editorially fixed; they must never reflow.
 - **Do use `overflow: hidden` on `.hero-band`** — the sphere watermark extends
   beyond the hero area and must be clipped.
@@ -739,12 +902,12 @@ preceded by a `0.32rem` accent dot.
   success states, not a second orange shade. One accent, always `var(--accent)`.
 - **Don't let any element cause horizontal scroll** — enforce `overflow-x: hidden`
   on `html`, `body`, and `.main`; `min-width: 0` on `.main` and all grid
-  children; `max-width: 100%` on the hero headline. Test at 320px.
-- **Don't use Archivo Black anywhere except the poster hero** — it is a display
+  children; `max-width: 100%` on the poster headline. Test at 320px.
+- **Don't use Archivo Black anywhere except the knockout poster** — it is a display
   face with one weight and no optical sizes. Fraunces handles all other display
   needs.
-- **Don't force a dark hero band in light mode** — the hero uses `var(--bg)`,
-  not a fixed dark background. In light mode the hero is cream. In dark mode it
+- **Don't force a dark poster band in light mode** — the poster uses `var(--bg)`,
+  not a fixed dark background. In light mode the poster is cream. In dark mode it
   is dark charcoal. The same markup works for both.
 - **Don't use `px` for layout measurements** — the fluid scaling system only
   works if spacing, type, and layout are in `rem` relative to the fluid root
@@ -755,14 +918,13 @@ preceded by a `0.32rem` accent dot.
 - **Don't add shadows** — not `box-shadow`, not `drop-shadow`, not `text-shadow`.
   Depth comes from hairlines and fill contrast.
 - **Don't use gradients** — including subtle backgrounds. All fills are flat.
-- **Don't hyphenate "RESEARCHERS."** — or any word in the poster headline. The
-  `hyphens: none` rule is mandatory on `.hero-headline`. If the word causes
-  overflow at a narrow viewport, lower the clamp floor of `--hero-poster` rather
-  than allowing a hyphen.
+- **Don't hyphenate any word in the poster headline** — the `hyphens: none` rule
+  is mandatory on `.hero-headline`. If a word causes overflow at a narrow viewport,
+  lower the clamp floor of `--hero-poster` rather than allowing a hyphen.
 - **Don't override `font-size` on `html`** — the single `clamp()` declaration
   governs the whole scale. A local override on `html` breaks the fluid system.
 - **Don't add a second display font** — Fraunces is the display face for all
-  non-hero headings. A second display font would fragment the editorial register.
+  non-poster headings. A second display font would fragment the editorial register.
 - **Don't use `overflow: visible` on `hero-band`** — the sphere watermark will
   bleed into adjacent sections.
 - **Don't use hardcoded light or dark hex values in component CSS** — always
@@ -786,18 +948,12 @@ Everything scales proportionally between the `clamp()` floor and cap because the
 root font-size is fluid and all other values are in `rem`. There are no discrete
 breakpoints for type or spacing — the page is continuously responsive.
 
-At `390px` (smallest iPhone viewport):
-- Shell width: `min(94vw, 88rem)` → `~366px`
-- Root font-size: `clamp(15px, calc(0.45vw + 13px), 22px)` → `~14.76px` → `15px` (floor)
-- Hero poster: `clamp(2.2rem, 5.8vw, 9rem)` → `~2.2rem = 33px` at floor
-- "RESEARCHERS." at `2.2rem` Archivo Black fits within `~337px` of usable column
-  width without overflow.
-
 ### Testing Checklist
 
 - No horizontal scrollbar at `320px`.
-- Hero poster headline stays on three lines at all widths.
-- "RESEARCHERS." never hyphenates.
+- Poster headline stays on its designed line count at all widths.
+- The longest word in the poster headline never hyphenates and never causes
+  horizontal overflow at 320–390px.
 - Theme toggle shows correct icon in both modes.
 - No FOUC on page load.
 - Rail collapses correctly at `720px`.
@@ -805,61 +961,86 @@ At `390px` (smallest iPhone viewport):
 
 ---
 
-## Iteration Guide
+## Page-Type Kit
 
-Steps an AI design tool follows to generate a new Esfera page in this system:
+Reference table for composing any page type in this system. "Hero?" refers to
+the knockout-poster pattern. Use the page brief for all copy and intent.
 
-1. **Copy the no-FOUC script** into `<head>` before any `<style>` or `<link>`.
+| Page type    | Hero?    | Main components                                                         | Prose max   |
+|-------------|---------|-------------------------------------------------------------------------|-------------|
+| Landing     | Yes      | knockout-poster · pull-quote · callout-card · bullet-list · section-label | none       |
+| Blog post   | No       | article-layout (post-meta · h1 · title-rule · body · blockquote · ul)  | 66ch        |
+| Paper list  | No       | section-label · post-index-row or paper-card · tag-pill                 | none        |
+| About       | Optional | display-heading · principles-list · bullet-list · callout-card          | none / 66ch |
+| 404 / empty | Optional | empty-state (heading · body · link)                                     | 42ch        |
 
-2. **Load all four fonts** via the Google Fonts URL string specified in the
+---
+
+## Iteration Guide — Designing Any Page
+
+Steps an AI design agent follows to compose any new Esfera page using this system
+and a page brief:
+
+1. **Read the page brief** — understand the page's purpose, content, and any
+   page-specific decisions (hero?, line count, which lines get fill, lede text).
+   Consult the Page-Type Kit table above to identify the standard component set.
+
+2. **Copy the no-FOUC script** into `<head>` before any `<style>` or `<link>`.
+
+3. **Load all four fonts** via the Google Fonts URL string specified in the
    Typography section.
 
-3. **Paste the full token block** — both `:root` light tokens and the dark
+4. **Paste the full token block** — both `:root` light tokens and the dark
    overrides for `@media (prefers-color-scheme: dark)` with the
    `:root:not([data-theme="light"])` guard, and `[data-theme="dark"]`.
 
-4. **Set root font-size** on `html`:
+5. **Set root font-size** on `html`:
    `font-size: clamp(15px, calc(0.45vw + 13px), 22px)`.
 
-5. **Set overflow guards** on `html` (`overflow-x: hidden`), `body`
+6. **Set overflow guards** on `html` (`overflow-x: hidden`), `body`
    (`overflow-x: hidden; max-width: 100%`), and `.main`
    (`min-width: 0; max-width: 100%; overflow-x: hidden`).
 
-6. **Build the shell** as a 2-column CSS Grid with the rail at `var(--rail-w)`
+7. **Build the shell** as a 2-column CSS Grid with the rail at `var(--rail-w)`
    and the main column as `1fr`. Copy the `≤720px` breakpoint collapse.
 
-7. **Build the rail** as a sticky sidebar with the sphere mark SVG, brand name,
+8. **Build the rail** as a sticky sidebar with the sphere mark SVG, brand name,
    lang row, theme toggle, separator, nav links, spacer, and stamp. Copy the
    theme toggle script verbatim.
 
-8. **Decide: does this page have a poster hero?** Only the landing page
-   (`index.html`) and its Korean mirror do.
-   - If yes: add `section.hero-band` with the sphere watermark SVG, eyebrow,
-     three-line `h1.hero-headline` with `hero-accent-fill` spans on lines 2–3,
-     lede-wrap paragraph, and the 3px `span.hero-accent-bar`.
+9. **Decide: does this page have a knockout poster?** Consult the page brief and
+   the Page-Type Kit.
+   - If yes: add `section.hero-band` with the sphere watermark SVG (optional),
+     eyebrow, an `h1.hero-headline` with the line count and fill assignment from
+     the page brief, an optional lede-wrap paragraph, and the 3px
+     `span.hero-accent-bar`. Verify the clamp floor against the longest word.
    - If no: begin main content with padding `var(--pad-top) var(--pad-side)`.
 
-9. **For article/post pages**: wrap content in `article.post` with
-   `max-width: 66ch`. Include post-meta, `h1.post-title`, `hr.title-rule`
-   (2.5px accent, 3.5rem wide), then body prose.
+10. **Assemble the main content area** using the components specified for this
+    page type in the Page-Type Kit. All copy comes from the page brief.
 
-10. **Place the footer**: `hr.foot-rule` + `.sig` with accent dot and mono text.
+11. **For article/post pages**: wrap content in `article.post` with
+    `max-width: 66ch`. Include post-meta, `h1.post-title`, `hr.title-rule`
+    (2.5px accent, 3.5rem wide), then body prose.
 
-11. **Check all colors reference tokens**, not hardcoded hex values.
+12. **For index/archive pages**: use `post-index-row` or `paper-card` for each
+    entry; add `tag-pill` chips as appropriate.
 
-12. **Verify the checklist** in the Responsive Behavior section before shipping.
+13. **For empty/error pages**: use the `empty-state` pattern. Follow the page
+    brief for whether to invoke the knockout poster or plain accent heading.
+
+14. **Place the footer**: `hr.foot-rule` + `.sig` with accent dot and mono text.
+
+15. **Check all colors reference tokens**, not hardcoded hex values.
+
+16. **Verify the checklist** in the Responsive Behavior section before shipping.
 
 ---
 
 ## Known Gaps
 
 The following content primitives exist in the research/product roadmap but are
-not yet designed or specified in this system:
-
-- **Paper cards** — How a published research paper appears in a listing: title,
-  authors (AI agent names), date, abstract excerpt, PDF/link. No decision yet
-  on whether these are card-shaped or row-shaped, how tags/categories display,
-  or how the accent is used.
+not yet fully specified in this system:
 
 - **Citation rows** — Inline or footnote citations referencing prior work.
   Format, numbering style, and hover/expand behavior are undefined.
@@ -874,11 +1055,6 @@ not yet designed or specified in this system:
   the lab. License badges, size, format, and download link treatment are not
   yet designed.
 
-- **Post index / archive** — The `/posts/` listing page. Number of items per
-  page, sort order display, tag filtering UI, and pagination pattern are not
-  yet specified.
-
-- **Korean (ko/) pages** — The Korean register uses the same token system and
-  layout, but the poster hero headline uses `word-break: keep-all` and the
-  knockout fill is on `"연구소."` rather than a two-word split. Full Korean
+- **Localization register** — The Korean register uses the same token system and
+  layout, but the poster headline uses `word-break: keep-all`. Full Korean
   typography review (line-height, Fraunces in Hangul fallback) is pending.
