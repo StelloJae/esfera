@@ -44,10 +44,10 @@
   --accent:     #d5560a;
   --rule:       #ccc4b7;
 
-  /* Hero band — warm near-dark surface, reads in both modes */
-  --hero-bg:    #1e1810;
-  --hero-ink:   #f0e8d8;
-  --hero-rule:  #2e261c;
+  /* Hero band — theme-consistent: light mode uses warm paper, dark uses dark bg */
+  --hero-bg:    var(--bg);
+  --hero-ink:   var(--ink);
+  --hero-rule:  var(--rule);
 
   /* Type families */
   --f-poster: "Archivo Black", "Arial Black", sans-serif;
@@ -56,7 +56,8 @@
   --f-mono:   "IBM Plex Mono", "Courier New", monospace;
 
   /* ── FLUID TYPE SCALE ──────────────────────────────────────────────── */
-  --hero-poster: clamp(2.4rem, 7vw, 8.5rem);
+  /* Tuned so Korean headline fits column at ~390px; word-break:keep-all prevents mid-word breaks */
+  --hero-poster: clamp(2.2rem, 6.2vw, 8.5rem);
   --hero:        clamp(2.8rem, 6.2vw, 7.5rem);
   --h2-disp:     clamp(1.35rem, 2.6vw, 2.6rem);
   --pull-q:      clamp(1.2rem, 2.2vw, 2rem);
@@ -84,10 +85,7 @@
     --ink-faint: #4a4440;
     --accent:    #f58a26;
     --rule:      #302a24;
-
-    --hero-bg:   #110e09;
-    --hero-ink:  #ede6da;
-    --hero-rule: #252018;
+    /* hero-bg/ink/rule inherit from var(--bg)/var(--ink)/var(--rule) — no override needed */
   }
 }
 
@@ -101,10 +99,7 @@
   --ink-faint: #4a4440;
   --accent:    #f58a26;
   --rule:      #302a24;
-
-  --hero-bg:   #110e09;
-  --hero-ink:  #ede6da;
-  --hero-rule: #252018;
+  /* hero-bg/ink/rule inherit from var(--bg)/var(--ink)/var(--rule) — no override needed */
 }
 
 /* --- RESET ------------------------------------------------------------ */
@@ -115,6 +110,7 @@ html {
   font-size: clamp(15px, calc(0.45vw + 13px), 22px);
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden; /* BUG 2: prevent horizontal scroll */
 }
 
 body {
@@ -126,6 +122,8 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* BUG 2: backstop */
+  max-width: 100%;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -254,6 +252,9 @@ img, svg { display: block; }
 /* --- MAIN ------------------------------------------------------------- */
 .main {
   padding-bottom: calc(var(--pad-top) * 1.6);
+  min-width: 0;    /* BUG 2: prevent grid child from overflowing */
+  max-width: 100%; /* BUG 2: backstop */
+  overflow-x: hidden; /* BUG 2: clip any stray overflow within column */
 }
 
 /* ======================================================================
@@ -284,6 +285,15 @@ img, svg { display: block; }
   letter-spacing: -0.02em;
   color: var(--hero-ink);
   margin-bottom: 0;
+  hyphens: none;           /* BUG 3: never break words mid-word */
+  overflow-wrap: normal;   /* BUG 2: don't force-break to prevent overflow */
+  word-break: keep-all;    /* BUG 3: Korean — never break mid-word */
+  max-width: 100%;         /* BUG 2: stay within column */
+}
+
+/* Each forced line of the hero headline */
+.hero-headline .hl {
+  display: block;
 }
 
 /* Accent fill word */
@@ -297,7 +307,7 @@ img, svg { display: block; }
 }
 
 .hero-lede-wrap {
-  border-top: 1px solid var(--hero-rule);
+  border-top: 1px solid var(--rule); /* BUG 1: was --hero-rule (always dark); now theme-aware */
   margin-top: clamp(1.75rem, 3.5vw, 3rem);
   padding-top: clamp(1.5rem, 3vw, 2.5rem);
 }
@@ -307,14 +317,14 @@ img, svg { display: block; }
   font-size: clamp(0.92rem, 1.5vw, 1.1rem);
   font-weight: 400;
   line-height: 1.78;
-  color: rgba(240, 232, 216, 0.72);
+  color: var(--ink-mid); /* BUG 1: was hardcoded light rgba; now theme-aware */
   max-width: 58ch;
   font-style: italic;
 }
 
 .hero-lede em {
   font-style: normal;
-  color: var(--hero-ink);
+  color: var(--ink); /* BUG 1: was hardcoded --hero-ink; now theme-aware */
 }
 
 .hero-accent-bar {
@@ -621,7 +631,8 @@ a:focus-visible {
       <span class="hero-eyebrow">Esfera Research &mdash; Est. 2026</span>
 
       <h1 class="hero-headline">
-        연구원이 없는<br><span class="hero-accent-fill">연구소</span><span style="color:var(--accent)">.</span>
+        <span class="hl">연구원이 없는</span>
+        <span class="hl"><span class="hero-accent-fill">연구소</span><span style="color:var(--accent)">.</span></span>
       </h1>
 
       <div class="hero-lede-wrap">
