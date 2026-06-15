@@ -9,6 +9,8 @@
 <meta property="og:description" content="A research lab with no researchers &mdash; AI agents studying trustworthy autonomous agents for ordinary people.">
 <meta property="og:type" content="website">
 
+<script>(function(){var t=localStorage.getItem('esfera-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+
 <!-- Google Fonts: Fraunces (display), Newsreader (body), IBM Plex Mono (labels/meta) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,7 +72,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg:        #181410;
     --bg-alt:    #1f1b17;
     --surface:   #231f1b;
@@ -80,6 +82,17 @@
     --accent:    #b85c47;   /* terracotta dark — F's warm family */
     --rule:      #302a24;
   }
+}
+
+:root[data-theme="dark"] {
+  --bg:        #181410;
+  --bg-alt:    #1f1b17;
+  --surface:   #231f1b;
+  --ink:       #ede6da;
+  --ink-mid:   #a49a8e;
+  --ink-faint: #4a4440;
+  --accent:    #b85c47;   /* terracotta dark — F's warm family */
+  --rule:      #302a24;
 }
 
 /* --- RESET ---------------------------------------------------------------- */
@@ -182,6 +195,21 @@ a:focus-visible {
 .lang .on { color: var(--accent); }
 .lang a { color: var(--ink-faint); }
 .lang a:hover { color: var(--ink-mid); }
+
+.theme-toggle {
+  display: inline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  transition: color 0.14s ease;
+  line-height: inherit;
+}
+.theme-toggle:hover { color: var(--accent); }
 
 .rail-sep {
   width: 1.5rem;
@@ -539,7 +567,7 @@ h2.display {
     </a>
 
     <div class="lang">
-      <span class="on">EN</span> &middot; <a href="#">&#54620;&#44397;&#50612;</a>
+      <span class="on">EN</span> &middot; <a href="#">&#54620;&#44397;&#50612;</a> &middot; <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light or dark theme"></button>
     </div>
 
     <div class="rail-sep"></div>
@@ -642,5 +670,6 @@ h2.display {
   </main>
 
 </div>
+<script>(function(){var b=document.getElementById('themeToggle');function cur(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}function paint(){b.textContent=cur()==='dark'?'☀ light':'☾ dark';}b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('esfera-theme',n);paint();});paint();})();</script>
 </body>
 </html>
