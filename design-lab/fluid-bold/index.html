@@ -66,8 +66,8 @@
   --pad-top:   clamp(2.8rem, 5.5vw, 5.5rem);
   --gap:       clamp(3rem, 7vw, 5.5rem);
 
-  /* Readability cap: body text stays ~62ch max; pull-quote ~54ch */
-  --prose-max: 62ch;
+  /* Body spreads to full content width; pull-quote stays ~54ch */
+  --prose-max: none;
   --pull-max:  54ch;
 }
 
@@ -285,7 +285,7 @@ h1 {
   font-weight: 400;
   color: var(--ink-mid);
   line-height: 1.72;
-  max-width: 58ch;
+  max-width: none;
 }
 
 /* --- SEPARATOR ------------------------------------------------------------ */
