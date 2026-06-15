@@ -263,7 +263,24 @@ img, svg { display: block; }
 .hero-band {
   background: var(--hero-bg);
   padding: clamp(3rem, 7vw, 6.5rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
-  /* No bottom rounding — clean editorial cut */
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-sphere-bg {
+  position: absolute;
+  right: -6%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--accent);
+}
+
+.hero-band > :not(.hero-sphere-bg) {
+  position: relative;
+  z-index: 1;
 }
 
 /* Eyebrow label above the headline */
@@ -299,14 +316,13 @@ img, svg { display: block; }
   white-space: nowrap; /* keep each explicit line on one row */
 }
 
-/* Accent fill word — solid warm fill, dark text on it */
+/* Accent fill word — KNOCKOUT: letters appear cut out of the orange fill.
+   color: var(--bg) = page surface (cream light / warm-dark), theme-aware. */
 .hero-accent-fill {
   display: inline;
   background: var(--accent);
-  color: #0e0a06;
-  /* Slight horizontal padding so fill extends just past letter edges */
-  padding: 0.02em 0.06em 0;
-  /* box-decoration-break so it wraps gracefully on narrow screens */
+  color: var(--bg);
+  padding: 0.02em 0.1em 0.04em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
@@ -664,16 +680,26 @@ a:focus-visible {
   <main class="main">
 
     <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════
-         Dark surface, Archivo Black uppercase, ONE accent fill on "NO".
-         Transitions into warm-serif editorial below via the accent bar.
+         Theme-aware bg, Archivo Black uppercase, D-b knockout fill on
+         "NO" + "RESEARCHERS." — letters cut out of orange fill.
     ═══════════════════════════════════════════════════════════════════════ -->
     <section class="hero-band" aria-label="Introduction">
+
+      <!-- Faint decorative sphere — D-b treatment, behind the headline -->
+      <svg class="hero-sphere-bg" width="640" height="640" viewBox="0 0 700 700" fill="none" aria-hidden="true">
+        <circle cx="350" cy="350" r="338" stroke="currentColor" stroke-width="2"/>
+        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="currentColor" stroke-width="2"/>
+        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="currentColor" stroke-width="2"/>
+        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+      </svg>
+
       <span class="hero-eyebrow">Esfera Research &mdash; Est. 2026</span>
 
       <h1 class="hero-headline">
         <span class="hl">A&nbsp;LAB&nbsp;WITH</span>
         <span class="hl"><span class="hero-accent-fill">NO</span></span>
-        <span class="hl">RESEARCHERS<span style="color:var(--accent)">.</span></span>
+        <span class="hl"><span class="hero-accent-fill">RESEARCHERS.</span></span>
       </h1>
 
       <div class="hero-lede-wrap">
