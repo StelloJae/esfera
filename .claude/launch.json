@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "brutal-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3200", "--directory", "/Users/stello/esfera"],
+      "port": 3200
+    }
+  ]
+}

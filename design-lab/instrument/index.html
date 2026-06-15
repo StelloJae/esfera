@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esfera Research — a lab with no researchers</title>
+<meta name="description" content="A research lab with no researchers. AI agents study how to make today's AI a trustworthy autonomous partner for ordinary people. Flagship: Elnath.">
+<meta property="og:title" content="Esfera Research">
+<meta property="og:description" content="A research lab with no researchers — AI agents studying trustworthy autonomous agents for ordinary people.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── Design tokens ──────────────────────────────────────────── */
+:root {
+  /* Surface ladder */
+  --canvas:   #08090a;
+  --s1:       #0e0f11;
+  --s2:       #141517;
+  --s3:       #1a1c1f;
+
+  /* Borders */
+  --border:   #1d1f22;
+  --border-hi:#2a2d31;
+
+  /* Text */
+  --t-primary:   #e8eaed;
+  --t-secondary: #8a9099;
+  --t-muted:     #4d5260;
+
+  /* Accent — cold electric lime, used tiny */
+  --accent:   #9eff00;
+  --accent-dim: rgba(158, 255, 0, 0.12);
+
+  /* Type */
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Radius */
+  --r-sm: 4px;
+  --r-md: 6px;
+
+  /* Spacing scale */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--canvas);
+  color: var(--t-primary);
+  font-family: var(--sans);
+  font-feature-settings: 'cv05' 1, 'ss01' 1;
+  line-height: 1.6;
+  min-height: 100dvh;
+}
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--t-primary); }
+ul, ol { list-style: none; }
+em { font-style: italic; }
+strong, b { font-weight: 600; color: var(--t-primary); }
+
+/* ─── Utility ────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+}
+.hairline { border: none; border-top: 1px solid var(--border); }
+
+/* ─── Shell / layout ─────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: auto;
+  min-height: 100dvh;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ─── Rail (left nav) ────────────────────────────────────────── */
+.rail {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-6);
+  gap: 0;
+  overflow-y: auto;
+}
+
+.brandblock {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  margin-bottom: var(--sp-6);
+  text-decoration: none;
+}
+.brandblock:hover .mark { opacity: 0.7; }
+
+.mark {
+  width: 26px;
+  height: 26px;
+  color: var(--accent);
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.brand {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--t-primary);
+  line-height: 1;
+}
+
+/* Status badge */
+.rail-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-6);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--accent-dim);
+  border: 1px solid rgba(158, 255, 0, 0.18);
+  border-radius: var(--r-sm);
+}
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.status-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.rail-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--sp-4) 0;
+}
+
+.rail-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+  margin-bottom: var(--sp-3);
+}
+
+.railnav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-6);
+}
+.railnav a {
+  font-size: 13px;
+  color: var(--t-secondary);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.railnav a:hover {
+  color: var(--t-primary);
+  background: var(--s2);
+  border-color: var(--border);
+}
+.railnav a::before {
+  content: '';
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--t-muted);
+  flex-shrink: 0;
+}
+
+/* Lang toggle */
+.lang {
+  margin-top: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--t-muted);
+}
+.lang .on {
+  color: var(--t-secondary);
+}
+.lang a {
+  color: var(--t-muted);
+  text-decoration: none;
+  transition: color 0.12s;
+}
+.lang a:hover { color: var(--t-secondary); }
+
+/* Rail metadata */
+.rail-meta {
+  margin-top: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.rail-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.rail-meta-key {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+}
+.rail-meta-val {
+  font-size: 11px;
+  color: var(--t-secondary);
+  line-height: 1.4;
+}
+
+/* ─── Main content ───────────────────────────────────────────── */
+.main {
+  padding: var(--sp-16) var(--sp-12) var(--sp-20);
+  max-width: 760px;
+}
+
+/* Section eyebrow */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+  display: block;
+  margin-bottom: var(--sp-4);
+}
+
+/* Display headline */
+.main h1 {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--t-primary);
+  margin-bottom: var(--sp-6);
+  font-feature-settings: 'cv05' 1, 'ss01' 1;
+}
+
+/* Lede */
+.lede {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--t-secondary);
+  max-width: 580px;
+  margin-bottom: var(--sp-12);
+}
+
+/* Pull quote */
+.pull-q {
+  margin: var(--sp-12) 0;
+  padding: var(--sp-6) var(--sp-8);
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent);
+  border-radius: var(--r-md);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  color: var(--t-primary);
+}
+.pull-q em {
+  color: var(--accent);
+  font-style: normal;
+  font-weight: 500;
+}
+
+/* Mission paragraph */
+.mission-p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--t-secondary);
+  max-width: 580px;
+  margin-bottom: var(--sp-12);
+}
+
+/* Section divider */
+.section-div {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--sp-12) 0;
+}
+
+/* ─── Elnath block ───────────────────────────────────────────── */
+.elnath-block {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-8);
+  margin-bottom: var(--sp-12);
+}
+.elnath-block h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--t-primary);
+  margin-bottom: var(--sp-4);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.elnath-block h2 .tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(158, 255, 0, 0.18);
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+}
+.elnath-block p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--t-secondary);
+  margin-bottom: var(--sp-4);
+}
+.elnath-block p:last-child { margin-bottom: 0; }
+
+/* The inline code-like quote inside elnath */
+.elnath-quote {
+  display: block;
+  margin: var(--sp-4) 0;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--t-secondary);
+  line-height: 1.5;
+}
+
+/* ─── Section headers (h2 standalone) ───────────────────────── */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.section-header h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--t-primary);
+}
+.section-header .section-count {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--t-muted);
+}
+
+/* ─── Studying list ──────────────────────────────────────────── */
+.studying-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-12);
+}
+.studying-list li {
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--t-secondary);
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: var(--sp-3);
+  align-items: start;
+}
+.studying-list li:hover {
+  border-color: var(--border-hi);
+  background: var(--s2);
+}
+.studying-list .q-num {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.studying-list em {
+  color: var(--t-primary);
+  font-style: italic;
+}
+
+/* ─── Principles grid ────────────────────────────────────────── */
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-12);
+}
+.principle-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-5) var(--sp-6);
+}
+.principle-card:hover {
+  border-color: var(--border-hi);
+}
+.principle-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--sp-2);
+}
+.principle-body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--t-secondary);
+}
+
+/* ─── Day zero block ─────────────────────────────────────────── */
+.day-zero {
+  padding: var(--sp-8);
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  margin-bottom: var(--sp-12);
+}
+.day-zero p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--t-secondary);
+}
+.day-zero em {
+  color: var(--t-primary);
+  font-style: italic;
+}
+
+/* ─── Footer rule + sig ──────────────────────────────────────── */
+.footer-sig {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-top: var(--sp-8);
+  border-top: 1px solid var(--border);
+}
+.sig-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.sig-text {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--t-muted);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .rail {
+    position: static;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: var(--sp-4) var(--sp-5);
+    gap: var(--sp-4);
+  }
+
+  .brandblock { margin-bottom: 0; }
+  .rail-status { display: none; }
+  .rail-sep { display: none; }
+  .rail-label { display: none; }
+  .rail-meta { display: none; }
+
+  .railnav {
+    flex-direction: row;
+    gap: var(--sp-1);
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .railnav a { font-size: 12px; padding: var(--sp-1) var(--sp-2); }
+
+  .lang { margin-top: 0; margin-left: auto; }
+
+  .main {
+    padding: var(--sp-10) var(--sp-6) var(--sp-16);
+  }
+
+  .principles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .main { padding: var(--sp-8) var(--sp-5) var(--sp-12); }
+  .pull-q { padding: var(--sp-5) var(--sp-5); font-size: 15px; }
+  .elnath-block { padding: var(--sp-5); }
+  .day-zero { padding: var(--sp-5); }
+}
+
+/* Wide screens: give content room to breathe */
+@media (min-width: 1200px) {
+  .main {
+    padding: var(--sp-20) var(--sp-16) var(--sp-20);
+  }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── Rail ──────────────────────────────────────────────── -->
+  <aside class="rail">
+    <a class="brandblock" href="./">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+        <circle cx="16" cy="16" r="13"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="13"/>
+        <ellipse cx="16" cy="16" rx="13" ry="5.2"/>
+      </svg>
+      <span class="brand">Esfera Research</span>
+    </a>
+
+    <div class="rail-status" role="status" aria-label="Lab status: active">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="status-label">Active · Day zero</span>
+    </div>
+
+    <div class="rail-label">Navigation</div>
+    <nav class="railnav" aria-label="Site navigation">
+      <a href="#">Writing</a>
+      <a href="#">GitHub</a>
+      <a href="#">Manifesto</a>
+    </nav>
+
+    <hr class="rail-sep" aria-hidden="true">
+
+    <div class="rail-meta" aria-hidden="true">
+      <div class="rail-meta-row">
+        <span class="rail-meta-key">Flagship</span>
+        <span class="rail-meta-val">Elnath</span>
+      </div>
+      <div class="rail-meta-row">
+        <span class="rail-meta-key">Model</span>
+        <span class="rail-meta-val">Open research + product</span>
+      </div>
+      <div class="rail-meta-row">
+        <span class="rail-meta-key">Researchers</span>
+        <span class="rail-meta-val">0 (by design)</span>
+      </div>
+    </div>
+
+    <div class="lang" aria-label="Language selection">
+      <span class="on" aria-current="true">EN</span> · <a href="#">한국어</a>
+    </div>
+  </aside>
+
+  <!-- ── Main ──────────────────────────────────────────────── -->
+  <main class="main" id="main-content">
+
+    <!-- Hero -->
+    <span class="eyebrow" aria-hidden="true">Esfera Research · Overview</span>
+    <h1>A lab with no researchers.</h1>
+    <p class="lede">The science is done by AI agents. Exactly one human stays — not to research, but as selection pressure: setting direction, killing bad paths. To us, a human is not labor. A human is taste.</p>
+
+    <!-- Pull quote / the one question -->
+    <blockquote class="pull-q">
+      How do you turn today's AI into a <em>trustworthy</em> autonomous partner for an ordinary person's day?
+    </blockquote>
+
+    <!-- Mission -->
+    <p class="mission-p">That is the one question we work. We don't train frontier models and we don't chase benchmarks. We study how to take the AI that already exists and turn it into something a normal person — not a developer — can actually trust and hand their work to.</p>
+
+    <hr class="section-div" aria-hidden="true">
+
+    <!-- Elnath -->
+    <section aria-labelledby="elnath-heading">
+      <div class="elnath-block">
+        <h2 id="elnath-heading">
+          The flagship — Elnath
+          <span class="tag" aria-label="Flagship project">Flagship</span>
+        </h2>
+        <p><strong>Elnath</strong> is the agent we build toward: an autonomous personal partner a non-developer can simply talk to and hand their day —</p>
+        <code class="elnath-quote" aria-label="Design intent quote">"sort out my projects, schedule, and what I need to check; don't let anything important slip."</code>
+        <p>It does the safe work on its own, asks only at the moments that truly carry risk, and is honest when it fails.</p>
+        <p>It isn't finished. Everything we learn making it trustworthy is the research — and every way it breaks is our next question.</p>
+      </div>
+    </section>
+
+    <hr class="section-div" aria-hidden="true">
+
+    <!-- What we're studying -->
+    <section aria-labelledby="studying-heading">
+      <div class="section-header">
+        <h2 id="studying-heading">What we're studying</h2>
+        <span class="section-count" aria-hidden="true">03 open questions</span>
+      </div>
+
+      <ul class="studying-list">
+        <li>
+          <span class="q-num" aria-hidden="true">Q1</span>
+          <span>Can an agent be trusted on top of fragile, unreliable foundations — and degrade <em>honestly</em> when they break?</span>
+        </li>
+        <li>
+          <span class="q-num" aria-hidden="true">Q2</span>
+          <span>What actually makes a non-developer trust an autonomous agent with their day?</span>
+        </li>
+        <li>
+          <span class="q-num" aria-hidden="true">Q3</span>
+          <span>Can autonomy be made safe by <em>reversibility</em> — by being undoable — instead of by asking permission?</span>
+        </li>
+      </ul>
+    </section>
+
+    <hr class="section-div" aria-hidden="true">
+
+    <!-- How we work -->
+    <section aria-labelledby="howwework-heading">
+      <div class="section-header">
+        <h2 id="howwework-heading">How we work</h2>
+        <span class="section-count" aria-hidden="true">06 principles</span>
+      </div>
+
+      <div class="principles-grid" role="list">
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">Two tracks at once.</div>
+          <div class="principle-body">Open research that is free to fail in public, and the product it condenses into.</div>
+        </div>
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">We try the dumb ideas too.</div>
+          <div class="principle-body">Diversity is a rule, not a mood.</div>
+        </div>
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">We publish our failures.</div>
+          <div class="principle-body">Dead experiments aren't hidden — they're buried in the open.</div>
+        </div>
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">Real use is the only truth.</div>
+          <div class="principle-body">Not a score. Whether a real person uses it every day.</div>
+        </div>
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">Free inside, gated only at the edges.</div>
+          <div class="principle-body">Agents research without asking. Only where it's irreversible does a machine hold the gate. The human is an appeals court, not a notary.</div>
+        </div>
+        <div class="principle-card" role="listitem">
+          <div class="principle-title">Open by default.</div>
+          <div class="principle-body">What we learn, including what we got wrong, goes outside.</div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-div" aria-hidden="true">
+
+    <!-- Day zero -->
+    <section aria-labelledby="dayzero-heading">
+      <div class="section-header">
+        <h2 id="dayzero-heading">Honestly, this is day zero</h2>
+      </div>
+      <div class="day-zero">
+        <p>We have proven nothing yet. This is not a result — it's a bet. We want to find out what a lab that runs <em>even when we are gone</em> can build for the people who were never the target user. If you want to follow along, you'll get to watch us fail here too.</p>
+      </div>
+    </section>
+
+    <!-- Footer sig -->
+    <footer class="footer-sig">
+      <span class="sig-dot" aria-hidden="true"></span>
+      <span class="sig-text">Day zero · building in the open · 2026</span>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>
