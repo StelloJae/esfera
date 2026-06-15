@@ -7,40 +7,45 @@
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <style>
-  :root{--bg:#0c0c0e;--fg:#ededeb;--mut:#8a8a86;--rule:#232327;--acc:#a59cff;--warm:#b06a2c}
+  :root{--bg:#0c0c0e;--fg:#ededeb;--mut:#8a8a86;--rule:#232327;--warm:#b85c47}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
   .wrap{max-width:46rem;margin:0 auto;padding:8vh 1.4rem 6rem}
-  .eyebrow{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--acc);margin:0 0 1rem}
+  .eyebrow{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--warm);margin:0 0 1rem}
   h1{font-size:2rem;letter-spacing:-.02em;margin:0 0 .4rem;font-weight:650}
   .sub{color:var(--mut);margin:0 0 2.4rem}
-  .lbl{font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin:2rem 0 .8rem;border-top:1px solid var(--rule);padding-top:1.2rem}
+  .lbl{font-family:ui-monospace,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin:2.2rem 0 .8rem;border-top:1px solid var(--rule);padding-top:1.2rem}
   a.card{display:block;text-decoration:none;color:inherit;border:1px solid var(--rule);border-radius:12px;padding:1.1rem 1.3rem;margin:0 0 .9rem;transition:border-color .15s}
-  a.card:hover{border-color:var(--acc)}
-  a.card.warm:hover{border-color:var(--warm)}
-  .card .n{font-size:1.15rem;font-weight:600;margin:0 0 .2rem}
+  a.card:hover{border-color:var(--warm)}
+  .card .n{font-size:1.18rem;font-weight:600;margin:0 0 .2rem}
   .card .d{color:var(--mut);font-size:.95rem;margin:0}
-  .card .tag{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--acc);letter-spacing:.1em;text-transform:uppercase}
-  .card.warm .tag{color:var(--warm)}
-  .foot{color:var(--mut);font-size:.85rem;margin-top:2rem;border-top:1px solid var(--rule);padding-top:1.2rem}
+  .card .tag{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--warm);letter-spacing:.1em;text-transform:uppercase}
+  .mini{display:flex;flex-wrap:wrap;gap:.5rem .9rem;font-size:.9rem}
+  .mini a{color:var(--mut);text-decoration:none;border:1px solid var(--rule);border-radius:8px;padding:.35rem .7rem}
+  .mini a:hover{color:var(--fg);border-color:var(--mut)}
+  .foot{color:var(--mut);font-size:.85rem;margin-top:2.4rem;border-top:1px solid var(--rule);padding-top:1.2rem}
   .foot a{color:var(--fg)}
 </style>
 </head>
 <body>
 <main class="wrap">
   <p class="eyebrow">Esfera · design lab</p>
-  <h1>Six directions.</h1>
-  <p class="sub">Same content, different design systems. Open each, pick the one that feels like Esfera.</p>
+  <h1>E × F blends — warm.</h1>
+  <p class="sub">Three blends of E (bold serif) and F (warm serif), all in F's warm palette. Pick the point on the bold↔warm spectrum that feels like Esfera.</p>
 
-  <p class="lbl">Anthropic-inspired · serif + large caps · warm — derived from B</p>
-  <a class="card warm" href="e/"><p class="tag">E · bold serif</p><p class="n">Anthropic-inspired, bold</p><p class="d">Fraunces high-contrast serif + mono caps, oxblood accent, large confident scale. Warm research house with edge.</p></a>
-  <a class="card warm" href="f/"><p class="tag">F · warm serif</p><p class="n">Anthropic-inspired, soft</p><p class="d">Same serif DNA, calmer & warmer (Fraunces + Newsreader), terracotta accent. A quiet scholarly journal.</p></a>
+  <a class="card" href="blend-bold/"><p class="tag">1 · blend-bold</p><p class="n">Bold-leaning</p><p class="d">E's big Fraunces hero + rail + uppercase, wrapped in F's warm paper & Newsreader body. Loud print up top, warm read below.</p></a>
+  <a class="card" href="blend-mid/"><p class="tag">2 · blend-mid</p><p class="n">Balanced</p><p class="d">Hero at opsz 72/700 — exactly between E's 144/900 and F's calm. E's signature, F's warmth & spacing. The "just right" middle.</p></a>
+  <a class="card" href="blend-warm/"><p class="tag">3 · blend-warm</p><p class="n">Warm-leaning</p><p class="d">F's paper-journal calm runs the page; one oversized uppercase-serif hero keeps presence. Oxblood used like a wax seal.</p></a>
 
-  <p class="lbl">Earlier directions</p>
-  <a class="card" href="brutal/"><p class="tag">A · brutal</p><p class="n">Austere brutalist lab</p><p class="d">Near-black, mono + tight grotesque, acid signal accent, 0px corners. Defiant lab notice-board.</p></a>
-  <a class="card" href="journal/"><p class="tag">B · journal</p><p class="n">Editorial academic print</p><p class="d">Warm paper/dark, Fraunces serif + mono, oxblood, masthead & drop cap. Your favorite — the seed for E/F.</p></a>
-  <a class="card" href="instrument/"><p class="tag">C · instrument</p><p class="n">Technical instrument</p><p class="d">Surface-ladder dark, Inter + JetBrains Mono, single cold-lime accent. Precise dev-tool chrome.</p></a>
-  <a class="card" href="signal/"><p class="tag">D · signal</p><p class="n">Bold film-title</p><p class="d">Pure black, Archivo Black huge caps, one mint fill as elevation. Cinematic manifesto poster.</p></a>
+  <p class="lbl">For reference</p>
+  <p class="mini">
+    <a href="e/">E · bold serif (parent)</a>
+    <a href="f/">F · warm serif (parent)</a>
+    <a href="brutal/">A · brutal</a>
+    <a href="journal/">B · journal</a>
+    <a href="instrument/">C · instrument</a>
+    <a href="signal/">D · signal</a>
+  </p>
 
   <p class="foot">Drafts for direction-picking. The winner gets fully finished + rolled across the real site. ← <a href="../">back to current site</a></p>
 </main>

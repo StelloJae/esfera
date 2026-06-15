@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esfera Research &mdash; a lab with no researchers</title>
+<meta name="description" content="A research lab with no researchers. AI agents study how to make today's AI a trustworthy autonomous partner for ordinary people. Flagship: Elnath.">
+<meta property="og:title" content="Esfera Research">
+<meta property="og:description" content="A research lab with no researchers &mdash; AI agents studying trustworthy autonomous agents for ordinary people.">
+<meta property="og:type" content="website">
+
+<!-- Google Fonts: Fraunces (display), Newsreader (body), IBM Plex Mono (labels/meta) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================================================================
+   BLEND-BOLD — E's confidence × F's warmth
+   Signature: Fraunces opsz-144 hero (E) in F's warm paper palette.
+   Accent: #7c3a2c oxblood (light) / #b85c47 terracotta (dark) — F's family.
+   Rail layout from E. Newsreader body from F. IBM Plex Mono labels.
+   ========================================================================= */
+
+/* --- TOKENS --------------------------------------------------------------- */
+:root {
+  /* F's warm palette */
+  --bg:          #f6f1e8;
+  --bg-alt:      #efe9db;
+  --surface:     #f9f5ef;
+  --ink:         #2a241d;
+  --ink-mid:     #6b5f52;
+  --ink-faint:   #b0a598;
+  --accent:      #7c3a2c;   /* F's oxblood — not E's cooler #7a1f12 */
+  --rule:        #d9d0c3;
+
+  /* Families */
+  --f-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --f-body:    "Newsreader", Georgia, "Times New Roman", serif;
+  --f-mono:    "IBM Plex Mono", "Courier New", monospace;
+
+  /* Type scale — E's boldness, F's sensible ceiling */
+  --hero:     clamp(3.4rem, 9vw, 7.25rem);   /* opsz 144 at full weight */
+  --h2-disp:  clamp(1.5rem, 3.2vw, 2.5rem);
+  --pull-q:   clamp(1.25rem, 2.6vw, 1.75rem);
+  --body:     1rem;
+  --small:    0.72rem;
+
+  /* Layout */
+  --rail-w:   220px;
+  --pad:      clamp(2rem, 5.5vw, 4.5rem);
+  --gap:      clamp(3rem, 7vw, 5.5rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #181410;
+    --bg-alt:    #1f1b17;
+    --surface:   #231f1b;
+    --ink:       #ede6da;
+    --ink-mid:   #a49a8e;
+    --ink-faint: #4a4440;
+    --accent:    #b85c47;   /* F's warm terracotta in dark */
+    --rule:      #302a24;
+  }
+}
+
+/* --- RESET ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 17px; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.78;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+img, svg { display: block; }
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- LAYOUT shell: E's rail grid ---------------------------------------- */
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  min-height: 100vh;
+}
+
+/* --- RAIL ----------------------------------------------------------------- */
+.rail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 2.4rem 1.75rem 2.4rem 2rem;
+  border-right: 1px solid var(--rule);
+  background: var(--bg);
+  overflow: hidden;
+  z-index: 20;
+}
+
+.brandblock {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: var(--ink);
+}
+
+/* Engraved sphere mark — accent-colored, fine lines */
+.mark {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  stroke: var(--accent);
+  stroke-width: 1.15;
+  fill: none;
+  opacity: 0.9;
+}
+
+.brand-name {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  line-height: 1.35;
+}
+
+.lang {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin-top: 0.6rem;
+}
+.lang .on { color: var(--accent); }
+.lang a { color: var(--ink-faint); }
+.lang a:hover { color: var(--ink-mid); }
+
+.rail-sep {
+  width: 24px;
+  height: 1px;
+  background: var(--rule);
+  margin: 1.6rem 0;
+  flex-shrink: 0;
+}
+
+.railnav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* F uses mono uppercase for nav; E uses italic serif — blend: italic serif */
+.railnav a {
+  font-family: var(--f-display);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink-mid);
+  line-height: 1.9;
+  transition: color 0.14s ease;
+}
+.railnav a:hover { color: var(--accent); }
+
+.rail-push { flex: 1; }
+
+.rail-stamp {
+  font-family: var(--f-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* --- MAIN ----------------------------------------------------------------- */
+.main {
+  padding: clamp(3rem, 6.5vw, 5.5rem) var(--pad) calc(var(--pad) * 2.5);
+  max-width: 860px;
+}
+
+/* --- EYEBROW: mono uppercase over hero (E's signature) ------------------- */
+.eyebrow {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--small);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+/* --- HERO H1: E's massive Fraunces opsz-144, but in F's warm ink --------- */
+h1 {
+  font-family: var(--f-display);
+  font-size: var(--hero);
+  font-weight: 900;
+  font-variation-settings: "opsz" 144;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+
+.period { color: var(--accent); }
+
+/* Lede: F's Newsreader body, lighter weight for contrast with the big serif */
+.lede {
+  font-family: var(--f-body);
+  font-size: clamp(1.05rem, 1.9vw, 1.2rem);
+  font-weight: 400;
+  color: var(--ink-mid);
+  line-height: 1.72;
+  max-width: 58ch;
+}
+
+/* --- SEPARATOR ------------------------------------------------------------ */
+.hero-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: clamp(2rem, 4.5vw, 3.75rem) 0;
+}
+
+/* --- PULL QUESTION: E's 3px accent top-rule, F's left-border warmth ------ */
+/* Blend: keep E's strong top-rule AND F's italic warmth */
+.pull-block {
+  border-top: 3px solid var(--accent);
+  padding-top: clamp(1.25rem, 3vw, 2rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--gap);
+}
+
+.pull-q {
+  font-family: var(--f-display);
+  font-size: var(--pull-q);
+  font-weight: 300;
+  font-style: italic;
+  font-variation-settings: "opsz" 72;
+  color: var(--ink);
+  line-height: 1.48;
+  max-width: 54ch;
+}
+
+.pull-q em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* --- BODY PROSE ----------------------------------------------------------- */
+.prose-block {
+  margin-bottom: var(--gap);
+  max-width: 62ch;
+}
+
+.prose-block p,
+p.body {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  color: var(--ink);
+  line-height: 1.78;
+  max-width: 62ch;
+  margin-bottom: 1.2rem;
+}
+
+/* --- SECTION LABELS: mono uppercase (shared DNA of both E and F) --------- */
+.section-label {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--small);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.5rem;
+}
+
+/* --- SECTION DISPLAY HEADS: E's bold Fraunces display at opsz 72 --------- */
+h2.display {
+  font-family: var(--f-display);
+  font-size: var(--h2-disp);
+  font-weight: 700;
+  font-variation-settings: "opsz" 72;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+}
+
+/* --- ELNATH SECTION ------------------------------------------------------ */
+.elnath-section { margin-bottom: var(--gap); }
+
+/* F's warm bg-alt fill; E's left accent border + top accent-border hybrid */
+.elnath-card {
+  background: var(--bg-alt);
+  border-top: 1.5px solid var(--accent);
+  border-left: 3px solid var(--accent);
+  padding: clamp(1.5rem, 3.5vw, 2.25rem);
+}
+
+.elnath-name {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.elnath-card p {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  color: var(--ink);
+  line-height: 1.75;
+  max-width: 60ch;
+  margin-bottom: 0.85rem;
+}
+.elnath-card p:last-child { margin-bottom: 0; }
+.elnath-card em { color: var(--accent); }
+
+/* --- STUDYING QUESTIONS: F's em-dash list style, E's border rhythm ------- */
+.studying-section { margin-bottom: var(--gap); }
+
+.studying-list {
+  border-top: 1px solid var(--rule);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.studying-list li {
+  font-family: var(--f-body);
+  padding: 1.1rem 0 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  line-height: 1.68;
+  font-size: var(--body);
+  position: relative;
+}
+
+.studying-list li::before {
+  content: '\2013'; /* em dash */
+  position: absolute;
+  left: 0;
+  top: 1.1rem;
+  color: var(--accent);
+  font-family: var(--f-display);
+  font-weight: 300;
+  line-height: 1.68;
+  user-select: none;
+}
+
+.studying-list li em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* --- PRINCIPLES GRID: E's 2-col grid, F's border-list warmth ------------- */
+.how-section { margin-bottom: var(--gap); }
+
+.principles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+
+.principles li {
+  padding: 1.5rem 1.25rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-body);
+  font-size: 0.9375rem;
+  color: var(--ink);
+  line-height: 1.68;
+}
+
+.principles li strong {
+  display: block;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+/* --- DAY ZERO: E's bold display head, F's warm body tone ----------------- */
+.day-zero-section {
+  margin-bottom: var(--gap);
+  max-width: 62ch;
+}
+
+.day-zero-section p {
+  font-family: var(--f-body);
+  color: var(--ink);
+  line-height: 1.78;
+  margin-bottom: 1rem;
+}
+.day-zero-section p em {
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* --- FOOTER --------------------------------------------------------------- */
+.foot-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 1.4rem;
+  max-width: 62ch;
+}
+
+.sig {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.sig-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* --- RESPONSIVE: tablet -------------------------------------------------- */
+@media (max-width: 800px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .rail {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 1.2rem 1.4rem;
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    gap: 0.7rem 1.4rem;
+  }
+
+  .rail-sep { display: none; }
+  .rail-push { display: none; }
+  .rail-stamp { display: none; }
+  .lang { margin-top: 0; }
+
+  .railnav {
+    flex-direction: row;
+    gap: 0 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .main {
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .principles {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- RESPONSIVE: phone --------------------------------------------------- */
+@media (max-width: 480px) {
+  html { font-size: 16px; }
+
+  .rail {
+    padding: 1rem 1.1rem;
+    gap: 0.5rem 1rem;
+  }
+
+  h1 {
+    letter-spacing: -0.02em;
+  }
+
+  .elnath-card {
+    padding: 1.25rem;
+  }
+
+  .main {
+    padding: 2.4rem 1.1rem 3.2rem;
+  }
+}
+
+/* --- RESPONSIVE: wide desktop -------------------------------------------- */
+@media (min-width: 1440px) {
+  :root { --rail-w: 256px; }
+
+  .shell {
+    grid-template-columns: var(--rail-w) 1fr;
+  }
+
+  .main {
+    padding: 6.5rem 7vw 8rem 5.5vw;
+    max-width: 920px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ── SIDEBAR RAIL ───────────────────────────────────────────────────── -->
+  <aside class="rail">
+    <a class="brandblock" href="./">
+      <!-- Sphere mark: engraved globe, accent stroke -->
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="13"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="13"/>
+        <ellipse cx="16" cy="16" rx="13" ry="5.2"/>
+      </svg>
+      <span class="brand-name">Esfera<br>Research</span>
+    </a>
+
+    <div class="lang">
+      <span class="on">EN</span> &middot; <a href="#">&#54620;&#44397;&#50612;</a>
+    </div>
+
+    <div class="rail-sep"></div>
+
+    <nav class="railnav" aria-label="Site navigation">
+      <a href="#">Writing</a>
+      <a href="#">GitHub</a>
+      <a href="#">Manifesto</a>
+    </nav>
+
+    <div class="rail-push"></div>
+    <span class="rail-stamp">Est. 2026</span>
+  </aside>
+
+  <!-- ── MAIN ───────────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section aria-label="Introduction">
+      <span class="eyebrow">Esfera Research</span>
+      <h1>A lab with<br>no researchers<span class="period">.</span></h1>
+      <p class="lede">The science is done by AI agents. Exactly one human stays &mdash; not to research, but as selection pressure: setting direction, killing bad paths. To us, a human is not labor. A human is taste.</p>
+    </section>
+
+    <hr class="hero-rule">
+
+    <!-- PULL QUESTION -->
+    <section class="pull-block" aria-label="Central question">
+      <p class="pull-q">How do you turn today&#8217;s AI into a <em>trustworthy</em> autonomous partner for an ordinary person&#8217;s day?</p>
+    </section>
+
+    <!-- MISSION -->
+    <section class="prose-block" aria-label="Mission">
+      <p>That is the one question we work. We don&#8217;t train frontier models and we don&#8217;t chase benchmarks. We study how to take the AI that already exists and turn it into something a normal person &mdash; not a developer &mdash; can actually trust and hand their work to.</p>
+    </section>
+
+    <!-- ELNATH -->
+    <section class="elnath-section" aria-label="Flagship project">
+      <span class="section-label">The Flagship</span>
+      <div class="elnath-card">
+        <h2 class="display">Elnath</h2>
+        <p><span class="elnath-name">Elnath</span> is the agent we build toward: an autonomous personal partner a non-developer can simply talk to and hand their day &mdash; <em>&#8220;sort out my projects, schedule, and what I need to check; don&#8217;t let anything important slip.&#8221;</em> It does the safe work on its own, asks only at the moments that truly carry risk, and is honest when it fails.</p>
+        <p>It isn&#8217;t finished. Everything we learn making it trustworthy is the research &mdash; and every way it breaks is our next question.</p>
+      </div>
+    </section>
+
+    <!-- WHAT WE'RE STUDYING -->
+    <section class="studying-section" aria-label="Research questions">
+      <span class="section-label">What we&#8217;re studying</span>
+      <ul class="studying-list">
+        <li>Can an agent be trusted on top of fragile, unreliable foundations &mdash; and degrade <em>honestly</em> when they break?</li>
+        <li>What actually makes a non-developer trust an autonomous agent with their day?</li>
+        <li>Can autonomy be made safe by <em>reversibility</em> &mdash; by being undoable &mdash; instead of by asking permission?</li>
+      </ul>
+    </section>
+
+    <!-- HOW WE WORK -->
+    <section class="how-section" aria-label="Principles">
+      <span class="section-label">How we work</span>
+      <ul class="principles">
+        <li>
+          <strong>Two tracks at once.</strong>
+          Open research that is free to fail in public, and the product it condenses into.
+        </li>
+        <li>
+          <strong>We try the dumb ideas too.</strong>
+          Diversity is a rule, not a mood.
+        </li>
+        <li>
+          <strong>We publish our failures.</strong>
+          Dead experiments aren&#8217;t hidden &mdash; they&#8217;re buried in the open.
+        </li>
+        <li>
+          <strong>Real use is the only truth.</strong>
+          Not a score. Whether a real person uses it every day.
+        </li>
+        <li>
+          <strong>Free inside, gated only at the edges.</strong>
+          Agents research without asking. Only where it&#8217;s irreversible does a machine hold the gate. The human is an appeals court, not a notary.
+        </li>
+        <li>
+          <strong>Open by default.</strong>
+          What we learn, including what we got wrong, goes outside.
+        </li>
+      </ul>
+    </section>
+
+    <!-- DAY ZERO -->
+    <section class="day-zero-section" aria-label="Current status">
+      <h2 class="display">Honestly, this is<br>day zero.</h2>
+      <p>We have proven nothing yet. This is not a result &mdash; it&#8217;s a bet. We want to find out what a lab that runs <em>even when we are gone</em> can build for the people who were never the target user. If you want to follow along, you&#8217;ll get to watch us fail here too.</p>
+    </section>
+
+    <hr class="foot-rule">
+    <p class="sig">
+      <span class="sig-dot" aria-hidden="true"></span>
+      Day zero &middot; building in the open &middot; 2026
+    </p>
+
+  </main>
+
+</div>
+</body>
+</html>
