@@ -34,13 +34,13 @@ OUTPUT, per page: ONE self-contained static HTML file.
 - Must work as a plain `.html` on GitHub Pages.
 
 NON-NEGOTIABLE RULES (don't violate, even if you skim the system):
-- **ONE warm accent only** (the amber tokens). Never add a second accent color.
+- **Cosmic accents only**: ONE main (starlight `#c4cdf0` dark / periwinkle `#4a57a6` light) + up to THREE cool subs — blue/violet/pink. NEVER warm/amber (that palette belongs to Elnath, not Esfera). Background is **void** in dark (`#0a0b12`) / **dawn-sky pale** in light (`#eef0f8`) — never cream.
 - **Fluid & proportional**: root `font-size: clamp(15px, calc(0.45vw + 13px), 22px)`; size everything in `rem`; shell `width: min(94vw, 88rem)`. The page scales with the window.
 - **ZERO horizontal scroll at any width** (`overflow-x:hidden` on html/body/.main, `min-width:0` on grid children, hero type sized so its longest word fits ~320px without overflow, `hyphens:none` on the hero).
 - **Light + dark**: auto via `prefers-color-scheme` PLUS a manual ☀/☾ toggle (`data-theme` override + `localStorage` + the no-FOUC inline script in `<head>` before CSS).
-- **Knockout-poster hero** (only if the brief specifies one): accent-filled words have `color: var(--bg)` (the surface color) so letters read cut-out — NEVER black.
+- **Knockout-poster hero** (only if the brief specifies one): accent-filled words sit on a **blue→violet→pink gradient fill** with `color: var(--bg)` so letters read cut-out — NEVER black. Hero key visual = a wireframe **celestial sphere** (multi-color strokes) + faint **nebula glow** + theme-aware **starfield** (full in dark, few/faint in dawn).
 - **Archivo Black ONLY for the poster hero.** Body = Fraunces (display) + Newsreader (reading) + IBM Plex Mono (labels).
-- No shadows/gradients; depth via hairlines + color. Minimal / 0 radius.
+- No shadows; depth via hairlines + color. Minimal / 0 radius. The ONLY gradient is the knockout nebula sweep + the faint hero nebula glow.
 - Accessible: semantic HTML, strong contrast, `aria-hidden` on the decorative sphere mark.
 
 Build the page the brief describes by composing the components defined in `DESIGN.md`. If the brief is missing something you need, ask; otherwise output the complete HTML file.

@@ -33,4 +33,4 @@
 - Rail: sphere mark + brand; EN/한국어 toggle; ☀/☾ theme toggle; links — Writing (`/posts/`), GitHub, Manifesto.
 
 ## Notes
-- The hero is the lab's one bold statement; the body is calm warm-serif reading. Korean mirror keeps the same structure and component choices.
+- The hero is the lab's one bold statement; the body is calm serif reading. Korean mirror keeps the same structure and component choices.
