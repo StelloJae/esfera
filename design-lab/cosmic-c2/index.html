@@ -265,52 +265,71 @@ img, svg { display: block; }
    Void surface, Archivo Black uppercase headline.
    Knockout gradient: NO + RESEARCHERS. fill = blue→violet→pink sweep.
    Knockout text = #0a0b12 (void letters cut through the nebula fill).
-   Faint nebula radial atmosphere: blue/violet/pink at ~0.06 opacity.
+   Nebula radial atmosphere: blue/violet/pink at ~0.12–0.18 opacity.
    ====================================================================== */
 
 .hero-band {
   background: transparent;
-  padding: clamp(3rem, 7vw, 6.5rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
+  padding: clamp(2rem, 4.5vw, 4rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-/* Faint nebula radial atmosphere behind the hero.
-   Three soft ellipses — blue, violet, pink — very low opacity. */
+/* Nebula bloom behind the sphere — upper-right anchor, three layered radials.
+   Centred around the sphere's position (upper-right: ~75% 25%).
+   Blue core → violet halo → pink fringe; opacity 0.12–0.18 range.
+   No hard edges — all gradients fade to transparent. */
 .hero-band::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 65% 55% at 65% 38%,
-      rgba(91, 124, 255, 0.06) 0%,
-      rgba(157, 92, 255, 0.05) 45%,
+    radial-gradient(ellipse 60% 55% at 76% 22%,
+      rgba(91, 124, 255, 0.15) 0%,
+      rgba(157, 92, 255, 0.11) 42%,
+      rgba(255, 95, 168, 0.05) 68%,
+      transparent 88%),
+    radial-gradient(ellipse 40% 38% at 80% 10%,
+      rgba(157, 92, 255, 0.10) 0%,
+      rgba(91, 124, 255, 0.06) 55%,
       transparent 80%),
-    radial-gradient(ellipse 45% 45% at 15% 75%,
-      rgba(255, 95, 168, 0.04) 0%,
-      transparent 65%),
-    radial-gradient(ellipse 35% 40% at 80% 80%,
-      rgba(157, 92, 255, 0.03) 0%,
-      transparent 60%);
+    radial-gradient(ellipse 30% 28% at 62% 38%,
+      rgba(255, 95, 168, 0.07) 0%,
+      transparent 65%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Faint wireframe celestial sphere — large, behind headline, reads among starfield */
+/* Wireframe celestial sphere — upper-right focal point.
+   Anchored top-right; sized so the sphere spans the upper ~55% of the hero.
+   right offset pulls it partially off edge for drama; top negative crops the crown. */
 .hero-sphere-bg {
   position: absolute;
-  right: -6%;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.07;
+  right: -4%;
+  top: -2%;
+  width: clamp(280px, 42vw, 540px);
+  height: clamp(280px, 42vw, 540px);
+  opacity: 1;
   pointer-events: none;
   z-index: 0;
   color: var(--accent);
 }
 
-/* Hero text sits above sphere and nebula atmosphere */
-.hero-band > * { position: relative; z-index: 1; }
-.hero-sphere-bg { z-index: 0; }
+/* Hero text sits above sphere and nebula atmosphere.
+   Note: .hero-sphere-bg is excluded from the relative rule via :not() */
+.hero-band > *:not(.hero-sphere-bg) { position: relative; z-index: 1; }
+.hero-sphere-bg { position: absolute !important; z-index: 0; }
+
+/* Spacer that pushes eyebrow + headline to the lower portion.
+   On mobile, shrink so the gap isn't a dead band. */
+.hero-upper-spacer {
+  flex: 1;
+  min-height: clamp(1rem, 6vw, 3rem);
+}
 
 /* Eyebrow label — starlight accent, subtle */
 .hero-eyebrow {
@@ -630,7 +649,7 @@ a:focus-visible {
 }
 
 /* --- NARROW TABLET — collapse rail to top bar ─────────────────────── */
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   .shell {
     grid-template-columns: 1fr;
     width: min(96vw, 88rem);
@@ -664,6 +683,20 @@ a:focus-visible {
   .hero-band {
     padding-left: clamp(1rem, 4vw, 2.5rem);
     padding-right: clamp(1rem, 4vw, 2.5rem);
+    min-height: unset;
+  }
+
+  /* On mobile, sphere sits above the content naturally — reduce size */
+  .hero-sphere-bg {
+    width: clamp(220px, 75vw, 320px);
+    height: clamp(220px, 75vw, 320px);
+    right: -8%;
+    top: -2%;
+  }
+
+  .hero-upper-spacer {
+    flex: 0;
+    min-height: 0;
   }
 
   .editorial {
@@ -850,6 +883,73 @@ a:focus-visible {
   <circle cx="840" cy="720" r="7"  fill="#9d5cff" opacity="0.04"/>
   <circle cx="550" cy="110" r="6"  fill="#ff5fa8" opacity="0.04"/>
   <circle cx="1200" cy="150" r="7" fill="#ff5fa8" opacity="0.04"/>
+
+  <!-- ── UPPER AREA STAR CLUSTER — denser + brighter around sphere zone (x 550–1200, y 0–380) ── -->
+  <!-- Extra faint distant fill — upper right quadrant -->
+  <circle cx="620"  cy="28"  r="0.6" fill="#eef1fa" opacity="0.30"/>
+  <circle cx="715"  cy="44"  r="0.7" fill="#c4cdf0" opacity="0.32"/>
+  <circle cx="842"  cy="18"  r="0.5" fill="#eef1fa" opacity="0.26"/>
+  <circle cx="967"  cy="55"  r="0.8" fill="#5b7cff" opacity="0.20"/>
+  <circle cx="1058" cy="32"  r="0.6" fill="#9d5cff" opacity="0.18"/>
+  <circle cx="1143" cy="66"  r="0.7" fill="#eef1fa" opacity="0.28"/>
+  <circle cx="1222" cy="40"  r="0.5" fill="#ff5fa8" opacity="0.15"/>
+  <circle cx="1307" cy="58"  r="0.6" fill="#c4cdf0" opacity="0.24"/>
+  <circle cx="580"  cy="100" r="0.5" fill="#9d5cff" opacity="0.18"/>
+  <circle cx="668"  cy="78"  r="0.7" fill="#eef1fa" opacity="0.30"/>
+  <circle cx="758"  cy="115" r="0.6" fill="#5b7cff" opacity="0.20"/>
+  <circle cx="912"  cy="88"  r="0.8" fill="#c4cdf0" opacity="0.34"/>
+  <circle cx="1012" cy="102" r="0.5" fill="#ff5fa8" opacity="0.16"/>
+  <circle cx="1118" cy="90"  r="0.7" fill="#eef1fa" opacity="0.28"/>
+  <circle cx="1245" cy="112" r="0.6" fill="#9d5cff" opacity="0.18"/>
+  <circle cx="1365" cy="78"  r="0.5" fill="#5b7cff" opacity="0.17"/>
+  <!-- Upper center + left supplement -->
+  <circle cx="105"  cy="48"  r="0.6" fill="#eef1fa" opacity="0.24"/>
+  <circle cx="248"  cy="30"  r="0.7" fill="#c4cdf0" opacity="0.26"/>
+  <circle cx="388"  cy="62"  r="0.5" fill="#9d5cff" opacity="0.16"/>
+  <circle cx="472"  cy="22"  r="0.6" fill="#eef1fa" opacity="0.22"/>
+  <!-- Mid-bright upper cluster: bigger + more visible -->
+  <circle cx="630"  cy="128" r="1.1" fill="#c4cdf0" opacity="0.52"/>
+  <circle cx="740"  cy="95"  r="1.3" fill="#eef1fa" opacity="0.58"/>
+  <circle cx="875"  cy="140" r="1.0" fill="#5b7cff" opacity="0.35"/>
+  <circle cx="965"  cy="115" r="1.2" fill="#eef1fa" opacity="0.55"/>
+  <circle cx="1065" cy="145" r="1.0" fill="#c4cdf0" opacity="0.48"/>
+  <circle cx="1152" cy="122" r="1.1" fill="#9d5cff" opacity="0.30"/>
+  <circle cx="1258" cy="138" r="1.2" fill="#eef1fa" opacity="0.50"/>
+  <circle cx="680"  cy="55"  r="1.0" fill="#5b7cff" opacity="0.32"/>
+  <circle cx="820"  cy="62"  r="1.4" fill="#c4cdf0" opacity="0.60"/>
+  <circle cx="1095" cy="58"  r="1.1" fill="#ff5fa8" opacity="0.28"/>
+  <circle cx="1350" cy="115" r="1.0" fill="#eef1fa" opacity="0.46"/>
+  <!-- Additional mid-range upper fill (y 160–300) -->
+  <circle cx="590"  cy="178" r="1.0" fill="#9d5cff" opacity="0.28"/>
+  <circle cx="685"  cy="202" r="1.2" fill="#eef1fa" opacity="0.50"/>
+  <circle cx="778"  cy="165" r="1.0" fill="#c4cdf0" opacity="0.46"/>
+  <circle cx="880"  cy="200" r="1.1" fill="#5b7cff" opacity="0.32"/>
+  <circle cx="995"  cy="168" r="1.3" fill="#eef1fa" opacity="0.56"/>
+  <circle cx="1095" cy="195" r="1.0" fill="#c4cdf0" opacity="0.44"/>
+  <circle cx="1175" cy="165" r="1.1" fill="#9d5cff" opacity="0.28"/>
+  <circle cx="1260" cy="198" r="1.0" fill="#eef1fa" opacity="0.48"/>
+  <circle cx="615"  cy="242" r="1.0" fill="#5b7cff" opacity="0.30"/>
+  <circle cx="720"  cy="265" r="1.1" fill="#ff5fa8" opacity="0.26"/>
+  <circle cx="840"  cy="245" r="1.2" fill="#eef1fa" opacity="0.52"/>
+  <circle cx="940"  cy="280" r="1.0" fill="#c4cdf0" opacity="0.46"/>
+  <circle cx="1040" cy="260" r="1.1" fill="#5b7cff" opacity="0.30"/>
+  <circle cx="1150" cy="248" r="1.0" fill="#eef1fa" opacity="0.48"/>
+  <circle cx="1310" cy="240" r="1.2" fill="#c4cdf0" opacity="0.52"/>
+  <!-- Brighter anchor stars — upper right, near sphere zone — with twinkle -->
+  <circle cx="782"  cy="48"  r="1.9" fill="#c4cdf0" opacity="0.72" class="star-twinkle-a" style="--star-op:0.72"/>
+  <circle cx="932"  cy="72"  r="2.2" fill="#eef1fa" opacity="0.78"/>
+  <circle cx="1070" cy="44"  r="1.7" fill="#5b7cff" opacity="0.58" class="star-twinkle-c" style="--star-op:0.58"/>
+  <circle cx="1188" cy="84"  r="2.0" fill="#c4cdf0" opacity="0.74" class="star-twinkle-b" style="--star-op:0.74"/>
+  <circle cx="860"  cy="118" r="1.8" fill="#9d5cff" opacity="0.55" class="star-twinkle-a" style="--star-op:0.55"/>
+  <circle cx="1010" cy="90"  r="2.4" fill="#eef1fa" opacity="0.82"/>
+  <circle cx="660"  cy="80"  r="1.6" fill="#ff5fa8" opacity="0.48" class="star-twinkle-b" style="--star-op:0.48"/>
+  <circle cx="1300" cy="96"  r="1.8" fill="#eef1fa" opacity="0.68"/>
+  <!-- Lens halos for new bright stars -->
+  <circle cx="932"  cy="72"  r="9"  fill="#eef1fa" opacity="0.04"/>
+  <circle cx="1010" cy="90"  r="10" fill="#c4cdf0" opacity="0.04"/>
+  <circle cx="782"  cy="48"  r="7"  fill="#c4cdf0" opacity="0.04"/>
+  <circle cx="1070" cy="44"  r="7"  fill="#5b7cff" opacity="0.04"/>
+  <circle cx="860"  cy="118" r="7"  fill="#9d5cff" opacity="0.04"/>
 </svg>
 
 <div class="shell">
@@ -889,14 +989,34 @@ a:focus-visible {
     <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════ -->
     <section class="hero-band" aria-label="Introduction">
 
-      <!-- Faint wireframe celestial sphere — behind headline, reads among starfield -->
-      <svg class="hero-sphere-bg" width="640" height="640" viewBox="0 0 700 700" fill="none" aria-hidden="true">
-        <circle cx="350" cy="350" r="338" stroke="currentColor" stroke-width="1.5"/>
-        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="currentColor" stroke-width="1.5"/>
-        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="currentColor" stroke-width="1.5"/>
-        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="currentColor" stroke-width="1" opacity="0.5"/>
-        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      <!-- Wireframe celestial sphere — upper hero focal point.
+           Outer circle: starlight (#c4cdf0), clearly visible.
+           Primary meridian: cosmic blue (#5b7cff), prominent.
+           Equator: nebula violet (#9d5cff), prominent.
+           Pink latitude ring: cosmic pink (#ff5fa8), perceptible.
+           Secondary meridians: starlight at lower opacity for depth.
+           Sized to fill the upper 60% of the hero, positioned upper-right. -->
+      <svg class="hero-sphere-bg" viewBox="0 0 700 700" fill="none" aria-hidden="true">
+        <!-- Outer circle: starlight, clearly visible -->
+        <circle cx="350" cy="350" r="338" stroke="#c4cdf0" stroke-width="1.8" opacity="0.45"/>
+        <!-- Primary meridian: cosmic blue -->
+        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="#5b7cff" stroke-width="2.0" opacity="0.55"/>
+        <!-- Equator: nebula violet -->
+        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="#9d5cff" stroke-width="2.0" opacity="0.55"/>
+        <!-- Wide secondary meridian: starlight -->
+        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="#c4cdf0" stroke-width="1.2" opacity="0.28"/>
+        <!-- Secondary latitude band: starlight -->
+        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="#c4cdf0" stroke-width="1.2" opacity="0.28"/>
+        <!-- Pink latitude ring — upper hemisphere band -->
+        <ellipse cx="350" cy="350" rx="338" ry="58" stroke="#ff5fa8" stroke-width="1.4" opacity="0.35"/>
+        <!-- Third meridian: blue at lower opacity -->
+        <ellipse cx="350" cy="350" rx="75" ry="338" stroke="#5b7cff" stroke-width="1.0" opacity="0.22"/>
+        <!-- Pole dot: starlight -->
+        <circle cx="350" cy="12" r="3" fill="#c4cdf0" opacity="0.40"/>
+        <circle cx="350" cy="688" r="3" fill="#c4cdf0" opacity="0.40"/>
       </svg>
+
+      <div class="hero-upper-spacer" aria-hidden="true"></div>
 
       <span class="hero-eyebrow">Esfera Research &mdash; Est. 2026</span>
 
