@@ -14,13 +14,11 @@
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 
-<!-- No-FOUC: read localStorage theme and apply before CSS loads -->
+<!-- No-FOUC: read localStorage theme and apply before CSS loads; default dark -->
 <script>
   (function(){
-    var t = localStorage.getItem('theme');
-    if (t === 'dark' || t === 'light') {
-      document.documentElement.dataset.theme = t;
-    }
+    var t = localStorage.getItem('esfera-theme');
+    document.documentElement.dataset.theme = (t === 'light' || t === 'dark') ? t : 'dark';
   })();
 </script>
 
@@ -92,6 +90,9 @@
 
   --prose-max: none;
   --pull-max:  54ch;
+
+  /* Shell width — exposed as a custom prop so the full-bleed hero can offset to the viewport edge */
+  --shell-width: min(94vw, 88rem);
 }
 
 /* ──────────────────────────────────────────────────────────────────────
@@ -478,6 +479,12 @@ img, svg { display: block; }
   mix-blend-mode: screen;
   object-fit: contain;
   display: none;
+  /* Photo globe is only ~0.59 of the square, so it reads smaller than the SVG.
+     Enlarge ~25% over the base sphere size; keep the upper-right placement. */
+  width: clamp(450px, 70vw, 950px);
+  height: clamp(450px, 70vw, 950px);
+  top: -7%;
+  right: -4%;
 }
 :root[data-theme="dark"] svg.hero-sphere-bg { display: none; }
 :root[data-theme="dark"] .hero-sphere-img { display: block; }
@@ -570,6 +577,19 @@ img, svg { display: block; }
     var(--accent-pink) 100%);
   display: block;
   opacity: 0.3;
+}
+
+/* Full-bleed hero to the right viewport edge (desktop only). Width-proportional
+   height (not 100vh) so the hero keeps its ratio when the page is resized
+   horizontally. Must come AFTER the base .hero-band rule so it wins; scoped to
+   min-width:801px so it never touches the ≤800px responsive padding. */
+@media (min-width: 801px) {
+  .main { overflow-x: visible; }
+  .hero-band {
+    min-height: clamp(480px, 58vw, 820px);
+    margin-right: calc((100vw - var(--shell-width)) / -2);
+    padding-right: calc(var(--pad-side) + (100vw - var(--shell-width)) / 2);
+  }
 }
 
 /* ======================================================================
@@ -1107,7 +1127,7 @@ a:focus-visible {
   <!-- ── SIDEBAR ────────────────────────────────────────────────────────── -->
   <aside class="rail">
     <a class="brandblock" href="../">
-      <img class="mark" src="../assets/logo-mark.png" alt="Esfera Research" width="128" height="128">
+      <img class="mark" src="../assets/hero-sphere.webp" alt="Esfera Research" width="128" height="128" style="mix-blend-mode: screen; object-fit: cover; object-position: center 42%;">
       <span class="brand-name">Esfera<br>Research</span>
     </a>
 
@@ -1122,8 +1142,8 @@ a:focus-visible {
 
     <nav class="railnav" aria-label="사이트 내비게이션">
       <a href="../posts/">글</a>
-      <a href="https://github.com/StelloJae/esfera">GitHub</a>
       <a href="https://github.com/StelloJae/esfera/blob/main/MANIFESTO.md">선언문</a>
+      <a href="https://github.com/StelloJae/esfera">GitHub</a>
     </nav>
 
     <div class="rail-push"></div>
@@ -1160,7 +1180,7 @@ a:focus-visible {
         <circle cx="350" cy="688" r="3" fill="var(--accent)" opacity="0.40"/>
       </svg>
       <!-- Dark theme: photographic cosmic globe, screen-blended into the void -->
-      <img class="hero-sphere-bg hero-sphere-img" src="../assets/hero-sphere.webp" alt="" aria-hidden="true">
+      <img class="hero-sphere-bg hero-sphere-img" src="../assets/hero-sphere.webp" alt="" aria-hidden="true" style="mix-blend-mode: screen; object-fit: contain;">
 
       <div class="hero-upper-spacer" aria-hidden="true"></div>
 
@@ -1266,7 +1286,7 @@ a:focus-visible {
       var goingDark = !isDark();
       var next = goingDark ? 'dark' : 'light';
       root.dataset.theme = next;
-      try { localStorage.setItem('theme', next); } catch(e) {}
+      try { localStorage.setItem('esfera-theme', next); } catch(e) {}
     });
   })();
 </script>
