@@ -7,6 +7,7 @@
 <meta name="description" content="A research lab with no researchers. AI agents study how to make today's AI a trustworthy autonomous partner for ordinary people. Flagship: Elnath.">
 <meta property="og:title" content="Esfera Research">
 <meta property="og:description" content="A research lab with no researchers &mdash; AI agents studying trustworthy autonomous agents for ordinary people.">
+<meta property="og:image" content="https://stellojae.github.io/esfera/og-image.png">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -337,11 +338,13 @@ img, svg { display: block; }
 
 /* Sphere mark: strokes use theme accent vars */
 .mark {
-  width: 1.55rem;
-  height: 1.55rem;
+  width: 1.75rem;
+  height: 1.75rem;
   flex-shrink: 0;
-  fill: none;
-  opacity: 0.9;
+  border-radius: 5px;
+  object-fit: cover;
+  display: block;
+  opacity: 0.96;
 }
 
 .brand-name {
@@ -1091,12 +1094,8 @@ a:focus-visible {
   <!-- ── SIDEBAR ────────────────────────────────────────────────────────── -->
   <aside class="rail">
     <a class="brandblock" href="./">
-      <!-- Sphere mark: strokes use theme accent vars for theme-awareness -->
-      <svg class="mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1.15">
-        <circle cx="16" cy="16" r="12.5" stroke="var(--accent)"/>
-        <ellipse cx="16" cy="16" rx="5.2" ry="12.5" stroke="var(--accent-blue)"/>
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.6" stroke="var(--accent-violet)"/>
-      </svg>
+      <!-- Brand mark: cosmic globe image -->
+      <img class="mark" src="assets/logo-mark.png" alt="Esfera Research" width="128" height="128">
       <span class="brand-name">Esfera<br>Research</span>
     </a>
 
