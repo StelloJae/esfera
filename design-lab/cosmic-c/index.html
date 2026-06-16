@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esfera Research &mdash; a lab with no researchers</title>
+<meta name="description" content="A research lab with no researchers. AI agents study how to make today's AI a trustworthy autonomous partner for ordinary people. Flagship: Elnath.">
+<meta property="og:title" content="Esfera Research">
+<meta property="og:description" content="A research lab with no researchers &mdash; AI agents studying trustworthy autonomous agents for ordinary people.">
+<meta property="og:type" content="website">
+
+<!-- Google Fonts: Archivo Black (poster hero) + Fraunces (display) + Newsreader (body) + IBM Plex Mono (labels/meta) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+
+/* ======================================================================
+   ESFERA — Cosmic C: Starlight Monochrome
+   Dark-only single mode. Deep void + white starlight.
+   Palette: void #0a0b12, accent #c4cdf0 (pale starlight-blue, near-white).
+   Knockout fill = #c4cdf0, text = #0a0b12 (void bg cuts through fill).
+   Starfield as signature atmosphere element.
+   Type system: Archivo Black + Fraunces + Newsreader + IBM Plex Mono.
+   Fluid root: clamp(15px, calc(0.45vw + 13px), 22px).
+   Shell: min(94vw, 88rem). Rail nav. Full-width body.
+   ====================================================================== */
+
+/* --- TOKENS ----------------------------------------------------------- */
+:root {
+  /* Starlight monochrome — dark only, single mode */
+  --bg:         #0a0b12;
+  --bg-alt:     #11131d;
+  --surface:    #141622;
+  --ink:        #eef1fa;
+  --ink-mid:    #8c92a8;
+  --ink-faint:  #4e5364;
+  --accent:     #c4cdf0;
+  --rule:       #20232f;
+
+  /* Knockout fill = accent, text = void bg so letters cut out */
+  --knockout-fill: #c4cdf0;
+  --knockout-text: #0a0b12;
+
+  /* Type families */
+  --f-poster: "Archivo Black", "Arial Black", sans-serif;
+  --f-serif:  "Fraunces", Georgia, "Times New Roman", serif;
+  --f-body:   "Newsreader", Georgia, "Times New Roman", serif;
+  --f-mono:   "IBM Plex Mono", "Courier New", monospace;
+
+  /* ── FLUID TYPE SCALE ──────────────────────────────────────────────── */
+  --hero-poster: clamp(2.2rem, 5.8vw, 9rem);
+  --hero:        clamp(2.8rem, 6.2vw, 7.5rem);
+  --h2-disp:     clamp(1.35rem, 2.6vw, 2.6rem);
+  --pull-q:      clamp(1.2rem, 2.2vw, 2rem);
+  --body:        1rem;
+  --small:       0.68rem;
+
+  /* ── FLUID LAYOUT ───────────────────────────────────────────────────── */
+  --rail-w:    12rem;
+  --pad-side:  clamp(1.4rem, 4vw, 6rem);
+  --pad-top:   clamp(2.8rem, 5.5vw, 5.5rem);
+  --gap:       clamp(2.8rem, 5vw, 5rem);
+
+  --prose-max: none;
+  --pull-max:  54ch;
+}
+
+/* --- RESET ------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── FLUID ROOT FONT-SIZE ─────────────────────────────────────────────── */
+html {
+  font-size: clamp(15px, calc(0.45vw + 13px), 22px);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.75;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+img, svg { display: block; }
+
+/* --- STARFIELD CANVAS ─────────────────────────────────────────────────
+   Fixed behind everything. Prominent but tasteful — varied sizes/opacities.
+   Contains itself: fixed + overflow:hidden ensures no bleed.
+   ─────────────────────────────────────────────────────────────────────── */
+#starfield {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* --- FLUID SHELL ─────────────────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
+  width: min(94vw, 88rem);
+  margin-inline: auto;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- RAIL ------------------------------------------------------------- */
+.rail {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--pad-top) 1.5rem var(--pad-top) 0;
+  border-right: 1px solid var(--rule);
+  background: transparent; /* Let starfield show through */
+  overflow: hidden;
+  z-index: 20;
+}
+
+.brandblock {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--ink);
+}
+
+/* Sphere mark: wireframe celestial sphere, accent stroke reads among stars */
+.mark {
+  width: 1.55rem;
+  height: 1.55rem;
+  flex-shrink: 0;
+  stroke: var(--accent);
+  fill: none;
+  opacity: 0.9;
+}
+
+.brand-name {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  line-height: 1.35;
+}
+
+.lang {
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  margin-top: 0.6rem;
+}
+
+.lang .on { color: var(--accent); }
+.lang a { color: var(--ink-faint); }
+.lang a:hover { color: var(--ink-mid); }
+
+.rail-sep {
+  width: 1.5rem;
+  height: 1px;
+  background: var(--rule);
+  margin: 1.75rem 0;
+  flex-shrink: 0;
+}
+
+.railnav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.railnav a {
+  font-family: var(--f-serif);
+  font-size: 0.875rem;
+  font-weight: 300;
+  font-style: italic;
+  font-variation-settings: "opsz" 36;
+  color: var(--ink-mid);
+  line-height: 1.5;
+  transition: color 0.14s ease;
+}
+.railnav a:hover { color: var(--accent); }
+
+.rail-push { flex: 1; }
+
+.rail-stamp {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* --- MAIN ------------------------------------------------------------- */
+.main {
+  padding-bottom: calc(var(--pad-top) * 1.6);
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ======================================================================
+   POSTER HERO BAND
+   Void surface, Archivo Black uppercase headline.
+   Knockout: NO + RESEARCHERS. fill = --accent (#c4cdf0),
+   text = --bg (#0a0b12) so the letterforms cut through as void.
+   ====================================================================== */
+
+.hero-band {
+  background: transparent; /* Starfield shows through */
+  padding: clamp(3rem, 7vw, 6.5rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint wireframe celestial sphere — large, behind headline, reads among starfield */
+.hero-sphere-bg {
+  position: absolute;
+  right: -6%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--accent);
+}
+
+/* Hero text sits above sphere */
+.hero-band > :not(.hero-sphere-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Eyebrow label */
+.hero-eyebrow {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--small);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  opacity: 0.7;
+}
+
+/* Poster headline */
+.hero-headline {
+  font-family: var(--f-poster);
+  font-size: var(--hero-poster);
+  font-weight: 400;
+  line-height: 0.93;
+  letter-spacing: -0.025em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  max-width: 100%;
+}
+
+/* Each forced line of the hero headline */
+.hero-headline .hl {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Knockout fill:
+   fill = #c4cdf0 (pale starlight), text = #0a0b12 (void bg).
+   The void-colored letters "cut out" of the pale starlight fill —
+   the starfield shows through those negative spaces. */
+.hero-accent-fill {
+  display: inline;
+  background: var(--knockout-fill);
+  color: var(--knockout-text);
+  padding: 0.02em 0.1em 0.04em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Divider rule: hairline, void-dark */
+.hero-lede-wrap {
+  border-top: 1px solid var(--rule);
+  margin-top: clamp(1.75rem, 3.5vw, 3rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.hero-lede {
+  font-family: var(--f-body);
+  font-size: clamp(0.92rem, 1.5vw, 1.1rem);
+  font-weight: 400;
+  line-height: 1.78;
+  color: var(--ink-mid);
+  max-width: 58ch;
+  font-style: italic;
+}
+
+.hero-lede em {
+  font-style: normal;
+  color: var(--ink);
+}
+
+/* Transition accent bar — hairline, accent-tinted */
+.hero-accent-bar {
+  width: 100%;
+  height: 1px;
+  background: var(--accent);
+  display: block;
+  opacity: 0.35;
+}
+
+/* ======================================================================
+   EDITORIAL BODY
+   ====================================================================== */
+
+.editorial {
+  padding: clamp(2.5rem, 5vw, 4.5rem) var(--pad-side) 0;
+}
+
+/* --- PULL QUESTION ---------------------------------------------------- */
+.pull-block {
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--accent);
+  margin-bottom: var(--gap);
+  max-width: var(--pull-max);
+  opacity: 0.9;
+}
+
+.pull-q {
+  font-family: var(--f-serif);
+  font-size: var(--pull-q);
+  font-weight: 300;
+  font-style: italic;
+  font-variation-settings: "opsz" 72;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.pull-q em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* --- HERO RULE -------------------------------------------------------- */
+.hero-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: clamp(1.8rem, 3.5vw, 3.25rem) 0;
+  max-width: var(--prose-max);
+}
+
+/* --- PROSE ------------------------------------------------------------ */
+.prose-block {
+  margin-bottom: var(--gap);
+  max-width: var(--prose-max);
+}
+
+.prose-block p {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.78;
+  color: var(--ink-mid);
+}
+
+/* --- SECTION LABELS --------------------------------------------------- */
+h2.label {
+  font-family: var(--f-mono);
+  font-size: var(--small);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 1.25rem;
+}
+
+h2.display {
+  font-family: var(--f-serif);
+  font-size: var(--h2-disp);
+  font-weight: 600;
+  font-variation-settings: "opsz" 48;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: clamp(0.9rem, 1.8vw, 1.5rem);
+}
+
+/* --- ELNATH ----------------------------------------------------------- */
+.elnath-section { margin-bottom: var(--gap); }
+
+.elnath-card {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--accent);
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: clamp(1.5rem, 2.8vw, 2.4rem);
+}
+
+.elnath-card h2.display {
+  font-size: clamp(1.25rem, 2vw, 2rem);
+  margin-bottom: 0.9rem;
+}
+
+.elnath-name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.elnath-card p {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  color: var(--ink-mid);
+  line-height: 1.76;
+  max-width: var(--prose-max);
+}
+.elnath-card p + p { margin-top: 0.85rem; }
+
+.elnath-card em { font-style: italic; color: var(--accent); }
+
+/* --- STUDYING LIST ---------------------------------------------------- */
+.studying-section { margin-bottom: var(--gap); }
+
+.studying-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: var(--prose-max);
+}
+
+.studying-list li {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.7;
+  color: var(--ink-mid);
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.studying-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-family: var(--f-serif);
+  font-weight: 300;
+  opacity: 0.7;
+}
+
+.studying-list li em {
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* --- PRINCIPLES ------------------------------------------------------- */
+.how-section { margin-bottom: var(--gap); }
+
+.principles {
+  max-width: var(--prose-max);
+}
+
+.principles li {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.74;
+  color: var(--ink-mid);
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.principles li:first-child {
+  border-top: 1px solid var(--rule);
+}
+
+.principles li strong {
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: var(--body);
+  color: var(--ink);
+  font-style: normal;
+  display: inline;
+}
+
+/* --- DAY ZERO --------------------------------------------------------- */
+.day-zero-section {
+  margin-bottom: var(--gap);
+  max-width: var(--prose-max);
+}
+
+.day-zero-section p {
+  font-family: var(--f-body);
+  font-size: var(--body);
+  line-height: 1.78;
+  color: var(--ink-mid);
+}
+
+.day-zero-section p em {
+  font-style: italic;
+  color: var(--ink);
+}
+
+/* --- FOOTER ----------------------------------------------------------- */
+.foot-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 1.375rem;
+  max-width: var(--prose-max);
+}
+
+.sig {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.sig-dot {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+/* --- FOCUS / ACCESSIBILITY ------------------------------------------- */
+a:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- NARROW TABLET — collapse rail to top bar ─────────────────────── */
+@media (max-width: 720px) {
+  .shell {
+    grid-template-columns: 1fr;
+    width: min(96vw, 88rem);
+  }
+
+  .rail {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 1.1rem 0;
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    gap: 0.6rem 1.25rem;
+  }
+
+  .rail-sep  { display: none; }
+  .rail-push { display: none; }
+  .rail-stamp { display: none; }
+  .lang { margin-top: 0; }
+
+  .railnav {
+    flex-direction: row;
+    gap: 0 1.1rem;
+    width: 100%;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .hero-band {
+    padding-left: clamp(1rem, 4vw, 2.5rem);
+    padding-right: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  .editorial {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .pull-block { max-width: 100%; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── STARFIELD ─────────────────────────────────────────────────────────
+     SVG starfield: ~90 stars at varied sizes (0.5–2.5px) and opacities.
+     Fixed behind page content. Signature atmospheric element.
+     Contained: fixed + overflow:hidden = no bleed, no scroll drift.
+──────────────────────────────────────────────────────────────────────── -->
+<svg id="starfield" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- Faint distant stars (r≈0.5–0.8, low opacity) -->
+  <circle cx="47"  cy="83"  r="0.6" fill="#eef1fa" opacity="0.28"/>
+  <circle cx="138" cy="41"  r="0.5" fill="#eef1fa" opacity="0.22"/>
+  <circle cx="219" cy="170" r="0.7" fill="#eef1fa" opacity="0.30"/>
+  <circle cx="302" cy="55"  r="0.5" fill="#eef1fa" opacity="0.18"/>
+  <circle cx="410" cy="120" r="0.6" fill="#eef1fa" opacity="0.25"/>
+  <circle cx="512" cy="38"  r="0.8" fill="#eef1fa" opacity="0.32"/>
+  <circle cx="601" cy="88"  r="0.5" fill="#eef1fa" opacity="0.20"/>
+  <circle cx="688" cy="145" r="0.6" fill="#eef1fa" opacity="0.27"/>
+  <circle cx="774" cy="62"  r="0.7" fill="#eef1fa" opacity="0.24"/>
+  <circle cx="855" cy="30"  r="0.5" fill="#eef1fa" opacity="0.19"/>
+  <circle cx="943" cy="108" r="0.6" fill="#eef1fa" opacity="0.29"/>
+  <circle cx="1035" cy="72" r="0.8" fill="#eef1fa" opacity="0.33"/>
+  <circle cx="1121" cy="157" r="0.5" fill="#eef1fa" opacity="0.21"/>
+  <circle cx="1207" cy="44"  r="0.6" fill="#eef1fa" opacity="0.26"/>
+  <circle cx="1318" cy="95"  r="0.7" fill="#eef1fa" opacity="0.31"/>
+  <circle cx="1402" cy="133" r="0.5" fill="#eef1fa" opacity="0.17"/>
+  <circle cx="88"  cy="248" r="0.6" fill="#eef1fa" opacity="0.23"/>
+  <circle cx="175" cy="315" r="0.8" fill="#eef1fa" opacity="0.35"/>
+  <circle cx="264" cy="276" r="0.5" fill="#eef1fa" opacity="0.19"/>
+  <circle cx="349" cy="340" r="0.6" fill="#eef1fa" opacity="0.28"/>
+  <circle cx="440" cy="258" r="0.7" fill="#eef1fa" opacity="0.24"/>
+  <circle cx="528" cy="322" r="0.5" fill="#eef1fa" opacity="0.16"/>
+  <circle cx="613" cy="285" r="0.8" fill="#eef1fa" opacity="0.36"/>
+  <circle cx="699" cy="350" r="0.6" fill="#eef1fa" opacity="0.27"/>
+  <circle cx="788" cy="298" r="0.5" fill="#eef1fa" opacity="0.20"/>
+  <circle cx="872" cy="265" r="0.7" fill="#eef1fa" opacity="0.30"/>
+  <circle cx="958" cy="338" r="0.6" fill="#eef1fa" opacity="0.25"/>
+  <circle cx="1048" cy="278" r="0.8" fill="#eef1fa" opacity="0.34"/>
+  <circle cx="1139" cy="315" r="0.5" fill="#eef1fa" opacity="0.18"/>
+  <circle cx="1225" cy="258" r="0.6" fill="#eef1fa" opacity="0.29"/>
+  <circle cx="1340" cy="302" r="0.7" fill="#eef1fa" opacity="0.22"/>
+  <!-- Mid-range stars (r≈1–1.4, medium opacity) -->
+  <circle cx="73"  cy="185" r="1.0" fill="#eef1fa" opacity="0.45"/>
+  <circle cx="161" cy="225" r="1.2" fill="#c4cdf0" opacity="0.50"/>
+  <circle cx="253" cy="142" r="1.0" fill="#eef1fa" opacity="0.42"/>
+  <circle cx="378" cy="198" r="1.3" fill="#eef1fa" opacity="0.48"/>
+  <circle cx="469" cy="162" r="1.0" fill="#c4cdf0" opacity="0.44"/>
+  <circle cx="557" cy="210" r="1.1" fill="#eef1fa" opacity="0.46"/>
+  <circle cx="643" cy="175" r="1.2" fill="#eef1fa" opacity="0.52"/>
+  <circle cx="731" cy="230" r="1.0" fill="#c4cdf0" opacity="0.40"/>
+  <circle cx="820" cy="188" r="1.3" fill="#eef1fa" opacity="0.47"/>
+  <circle cx="910" cy="150" r="1.0" fill="#eef1fa" opacity="0.43"/>
+  <circle cx="999" cy="215" r="1.1" fill="#c4cdf0" opacity="0.51"/>
+  <circle cx="1088" cy="172" r="1.2" fill="#eef1fa" opacity="0.45"/>
+  <circle cx="1178" cy="228" r="1.0" fill="#eef1fa" opacity="0.38"/>
+  <circle cx="1270" cy="190" r="1.3" fill="#c4cdf0" opacity="0.49"/>
+  <circle cx="1378" cy="220" r="1.0" fill="#eef1fa" opacity="0.44"/>
+  <circle cx="112" cy="420" r="1.1" fill="#eef1fa" opacity="0.46"/>
+  <circle cx="228" cy="465" r="1.0" fill="#c4cdf0" opacity="0.42"/>
+  <circle cx="320" cy="435" r="1.2" fill="#eef1fa" opacity="0.50"/>
+  <circle cx="487" cy="480" r="1.0" fill="#eef1fa" opacity="0.38"/>
+  <circle cx="582" cy="448" r="1.3" fill="#c4cdf0" opacity="0.53"/>
+  <circle cx="670" cy="490" r="1.1" fill="#eef1fa" opacity="0.44"/>
+  <circle cx="762" cy="428" r="1.0" fill="#eef1fa" opacity="0.40"/>
+  <circle cx="855" cy="470" r="1.2" fill="#c4cdf0" opacity="0.48"/>
+  <circle cx="942" cy="445" r="1.0" fill="#eef1fa" opacity="0.43"/>
+  <circle cx="1030" cy="488" r="1.3" fill="#eef1fa" opacity="0.51"/>
+  <circle cx="1120" cy="432" r="1.1" fill="#c4cdf0" opacity="0.47"/>
+  <circle cx="1210" cy="475" r="1.0" fill="#eef1fa" opacity="0.39"/>
+  <circle cx="1305" cy="450" r="1.2" fill="#eef1fa" opacity="0.46"/>
+  <circle cx="1398" cy="490" r="1.0" fill="#c4cdf0" opacity="0.41"/>
+  <!-- Brighter nearer stars (r≈1.5–2.5, higher opacity — the "bright" ones) -->
+  <circle cx="195" cy="97"  r="1.8" fill="#eef1fa" opacity="0.72"/>
+  <circle cx="455" cy="52"  r="2.2" fill="#c4cdf0" opacity="0.68"/>
+  <circle cx="720" cy="108" r="1.5" fill="#eef1fa" opacity="0.70"/>
+  <circle cx="1008" cy="65" r="2.0" fill="#eef1fa" opacity="0.65"/>
+  <circle cx="1290" cy="88" r="1.7" fill="#c4cdf0" opacity="0.73"/>
+  <circle cx="62"  cy="370" r="1.5" fill="#eef1fa" opacity="0.68"/>
+  <circle cx="340" cy="392" r="2.1" fill="#c4cdf0" opacity="0.71"/>
+  <circle cx="625" cy="378" r="1.6" fill="#eef1fa" opacity="0.66"/>
+  <circle cx="905" cy="408" r="2.3" fill="#eef1fa" opacity="0.74"/>
+  <circle cx="1175" cy="385" r="1.8" fill="#c4cdf0" opacity="0.69"/>
+  <circle cx="1412" cy="362" r="1.5" fill="#eef1fa" opacity="0.64"/>
+  <circle cx="130" cy="560" r="2.0" fill="#eef1fa" opacity="0.67"/>
+  <circle cx="410" cy="590" r="1.5" fill="#c4cdf0" opacity="0.70"/>
+  <circle cx="680" cy="565" r="2.2" fill="#eef1fa" opacity="0.72"/>
+  <circle cx="955" cy="600" r="1.7" fill="#eef1fa" opacity="0.65"/>
+  <circle cx="1240" cy="580" r="2.4" fill="#c4cdf0" opacity="0.76"/>
+  <circle cx="75"  cy="730" r="1.8" fill="#eef1fa" opacity="0.60"/>
+  <circle cx="285" cy="760" r="1.5" fill="#c4cdf0" opacity="0.63"/>
+  <circle cx="520" cy="740" r="2.0" fill="#eef1fa" opacity="0.68"/>
+  <circle cx="780" cy="775" r="1.6" fill="#eef1fa" opacity="0.58"/>
+  <circle cx="1045" cy="748" r="2.3" fill="#c4cdf0" opacity="0.71"/>
+  <circle cx="1320" cy="762" r="1.5" fill="#eef1fa" opacity="0.62"/>
+  <!-- Tiny scattered fill stars, lower section -->
+  <circle cx="155" cy="648" r="0.6" fill="#eef1fa" opacity="0.24"/>
+  <circle cx="362" cy="680" r="0.5" fill="#eef1fa" opacity="0.20"/>
+  <circle cx="595" cy="655" r="0.7" fill="#c4cdf0" opacity="0.28"/>
+  <circle cx="840" cy="692" r="0.6" fill="#eef1fa" opacity="0.22"/>
+  <circle cx="1105" cy="663" r="0.8" fill="#eef1fa" opacity="0.30"/>
+  <circle cx="1380" cy="685" r="0.5" fill="#c4cdf0" opacity="0.25"/>
+  <circle cx="240" cy="820" r="0.6" fill="#eef1fa" opacity="0.19"/>
+  <circle cx="490" cy="845" r="0.8" fill="#eef1fa" opacity="0.26"/>
+  <circle cx="720" cy="830" r="0.5" fill="#c4cdf0" opacity="0.22"/>
+  <circle cx="980" cy="858" r="0.7" fill="#eef1fa" opacity="0.24"/>
+  <circle cx="1200" cy="840" r="0.6" fill="#eef1fa" opacity="0.20"/>
+  <!-- One occasional soft "lens" haze around a bright star — tasteful glow -->
+  <circle cx="455" cy="52"  r="6" fill="#c4cdf0" opacity="0.05"/>
+  <circle cx="905" cy="408" r="8" fill="#eef1fa" opacity="0.04"/>
+  <circle cx="1240" cy="580" r="7" fill="#c4cdf0" opacity="0.04"/>
+</svg>
+
+<div class="shell">
+
+  <!-- ── SIDEBAR ────────────────────────────────────────────────────────── -->
+  <aside class="rail">
+    <a class="brandblock" href="./">
+      <!-- Sphere mark: wireframe celestial sphere — fine hairlines, accent stroke -->
+      <svg class="mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1.15">
+        <circle cx="16" cy="16" r="12.5"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="12.5"/>
+        <ellipse cx="16" cy="16" rx="12.5" ry="4.6"/>
+      </svg>
+      <span class="brand-name">Esfera<br>Research</span>
+    </a>
+
+    <div class="lang">
+      <span class="on">EN</span> &middot; <a href="ko/">&#54620;&#44397;&#50612;</a>
+    </div>
+
+    <div class="rail-sep"></div>
+
+    <nav class="railnav" aria-label="Site navigation">
+      <a href="posts/">Writing</a>
+      <a href="https://github.com/StelloJae/esfera">GitHub</a>
+      <a href="https://github.com/StelloJae/esfera/blob/main/MANIFESTO.md">Manifesto</a>
+    </nav>
+
+    <div class="rail-push"></div>
+    <span class="rail-stamp">Est.&nbsp;2026</span>
+  </aside>
+
+  <!-- ── MAIN ─────────────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════ -->
+    <section class="hero-band" aria-label="Introduction">
+
+      <!-- Faint wireframe celestial sphere — D-b treatment, behind headline -->
+      <svg class="hero-sphere-bg" width="640" height="640" viewBox="0 0 700 700" fill="none" aria-hidden="true">
+        <circle cx="350" cy="350" r="338" stroke="currentColor" stroke-width="1.5"/>
+        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="currentColor" stroke-width="1.5"/>
+        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="currentColor" stroke-width="1.5"/>
+        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+      </svg>
+
+      <span class="hero-eyebrow">Esfera Research &mdash; Est. 2026</span>
+
+      <h1 class="hero-headline">
+        <span class="hl">A&nbsp;LAB&nbsp;WITH</span>
+        <span class="hl"><span class="hero-accent-fill">NO</span></span>
+        <span class="hl"><span class="hero-accent-fill">RESEARCHERS.</span></span>
+      </h1>
+
+      <div class="hero-lede-wrap">
+        <p class="hero-lede">The science is done by AI agents. Exactly one human stays &mdash; not to research, but as selection pressure: setting direction, killing bad paths. To us, a human is not labor. A human is <em>taste</em>.</p>
+      </div>
+    </section>
+
+    <!-- Accent transition bar: poster → editorial -->
+    <span class="hero-accent-bar" role="separator" aria-hidden="true"></span>
+
+    <!-- ══ EDITORIAL BODY ════════════════════════════════════════════════ -->
+    <div class="editorial">
+
+      <!-- PULL QUESTION -->
+      <section class="pull-block" aria-label="Central question">
+        <p class="pull-q">How do you turn today&#8217;s AI into a <em>trustworthy</em> autonomous partner for an ordinary person&#8217;s day?</p>
+      </section>
+
+      <hr class="hero-rule">
+
+      <!-- MISSION PROSE -->
+      <section class="prose-block" aria-label="Mission">
+        <p>That is the one question we work. We don&#8217;t train frontier models and we don&#8217;t chase benchmarks. We study how to take the AI that already exists and turn it into something a normal person &mdash; not a developer &mdash; can actually trust and hand their work to.</p>
+      </section>
+
+      <!-- ELNATH -->
+      <section class="elnath-section" aria-label="Flagship project">
+        <h2 class="label">The Flagship</h2>
+        <div class="elnath-card">
+          <h2 class="display">Elnath</h2>
+          <p><span class="elnath-name">Elnath</span> is the agent we build toward: an autonomous personal partner a non-developer can simply talk to and hand their day &mdash; <em>&#8220;sort out my projects, schedule, and what I need to check; don&#8217;t let anything important slip.&#8221;</em> It does the safe work on its own, asks only at the moments that truly carry risk, and is honest when it fails.</p>
+          <p>It isn&#8217;t finished. Everything we learn making it trustworthy is the research &mdash; and every way it breaks is our next question.</p>
+        </div>
+      </section>
+
+      <!-- WHAT WE'RE STUDYING -->
+      <section class="studying-section" aria-label="Research questions">
+        <h2 class="label">What we&#8217;re studying</h2>
+        <ul class="studying-list">
+          <li>Can an agent be trusted on top of fragile, unreliable foundations &mdash; and degrade <em>honestly</em> when they break?</li>
+          <li>What actually makes a non-developer trust an autonomous agent with their day?</li>
+          <li>Can autonomy be made safe by <em>reversibility</em> &mdash; by being undoable &mdash; instead of by asking permission?</li>
+        </ul>
+      </section>
+
+      <!-- HOW WE WORK -->
+      <section class="how-section" aria-label="Principles">
+        <h2 class="label">How we work</h2>
+        <ul class="principles">
+          <li><strong>Two tracks at once.</strong> Open research that is free to fail in public, and the product it condenses into.</li>
+          <li><strong>We try the dumb ideas too.</strong> Diversity is a rule, not a mood.</li>
+          <li><strong>We publish our failures.</strong> Dead experiments aren&#8217;t hidden &mdash; they&#8217;re buried in the open.</li>
+          <li><strong>Real use is the only truth.</strong> Not a score. Whether a real person uses it every day.</li>
+          <li><strong>Free inside, gated only at the edges.</strong> Agents research without asking. Only where it&#8217;s irreversible does a machine hold the gate. The human is an appeals court, not a notary.</li>
+          <li><strong>Open by default.</strong> What we learn, including what we got wrong, goes outside.</li>
+        </ul>
+      </section>
+
+      <!-- DAY ZERO -->
+      <section class="day-zero-section" aria-label="Current status">
+        <h2 class="display">Honestly, this is<br>day zero.</h2>
+        <p>We have proven nothing yet. This is not a result &mdash; it&#8217;s a bet. We want to find out what a lab that runs <em>even when we are gone</em> can build for the people who were never the target user. If you want to follow along, you&#8217;ll get to watch us fail here too.</p>
+      </section>
+
+      <hr class="foot-rule">
+      <p class="sig">
+        <span class="sig-dot" aria-hidden="true"></span>
+        Day zero &middot; building in the open &middot; 2026
+      </p>
+
+    </div><!-- /.editorial -->
+
+  </main>
+
+</div><!-- /.shell -->
+
+</body>
+</html>
