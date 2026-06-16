@@ -8,3 +8,6 @@ secrets/
 .DS_Store
 *.log
 runtime/state/
+
+# private internal docs — has its own git repo; never on public GitHub
+internal/
