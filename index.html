@@ -473,6 +473,19 @@ img, svg { display: block; }
 .hero-band > *:not(.hero-sphere-bg) { position: relative; z-index: 1; }
 .hero-sphere-bg { position: absolute !important; z-index: 0; }
 
+/* Photographic globe (dark only): black blends out via screen, leaving the glow */
+.hero-sphere-img {
+  mix-blend-mode: screen;
+  object-fit: contain;
+  display: none;
+}
+:root[data-theme="dark"] svg.hero-sphere-bg { display: none; }
+:root[data-theme="dark"] .hero-sphere-img { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) svg.hero-sphere-bg { display: none; }
+  :root:not([data-theme="light"]) .hero-sphere-img { display: block; }
+}
+
 .hero-upper-spacer {
   flex: 1;
   min-height: clamp(1rem, 6vw, 3rem);
@@ -1147,6 +1160,8 @@ a:focus-visible {
         <circle cx="350" cy="12" r="3" fill="var(--accent)" opacity="0.40"/>
         <circle cx="350" cy="688" r="3" fill="var(--accent)" opacity="0.40"/>
       </svg>
+      <!-- Dark theme: photographic cosmic globe, screen-blended into the void -->
+      <img class="hero-sphere-bg hero-sphere-img" src="assets/hero-sphere.webp" alt="" aria-hidden="true">
 
       <div class="hero-upper-spacer" aria-hidden="true"></div>
 
