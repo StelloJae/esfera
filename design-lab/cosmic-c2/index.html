@@ -17,38 +17,46 @@
 <style>
 
 /* ======================================================================
-   ESFERA — Cosmic C2: Starlight + Nebula
+   ESFERA — Cosmic C2 (rebuild): Starlight + Nebula — 4-color scheme
    Dark-only single mode. Deep void base + starlight dominant accent.
-   Sub-colors: --accent-blue #6f8fff (cosmic blue), --accent-violet #a98cff
-   (nebula violet), --accent-cyan #6fd0e0 (starlight cyan).
-   Used subtly: multi-tint starfield, pull-quote rule, callout border,
-   period dots, eyebrow accents, sphere mark hue-shift, nebula gradients.
-   Knockout fill = subtle starlight→violet gradient, text = #0a0b12 void.
-   Type system: Archivo Black + Fraunces + Newsreader + IBM Plex Mono.
-   Fluid root: clamp(15px, calc(0.45vw + 13px), 22px).
-   Shell: min(94vw, 88rem). Rail nav. Full-width body.
+   4 colors:
+     --accent        #c4cdf0  (starlight — primary, stays dominant)
+     --accent-blue   #5b7cff  (cosmic blue — vivid sub-1)
+     --accent-violet #9d5cff  (nebula violet — vivid sub-2)
+     --accent-pink   #ff5fa8  (cosmic pink/magenta — vivid sub-3, new)
+   Sub-colors used subtly: multi-tint starfield, knockout nebula gradient,
+   pull-quote rule, callout border, sphere mark hues, footer dots, eyebrow.
+   Knockout hero gradient: blue→violet→pink across "NO" / "RESEARCHERS.".
+   Knockout text stays #0a0b12 (void cut-out).
+   Faint nebula radial atmosphere in hero (blue/violet/pink, ~0.06 opacity).
+   Starfield: white + starlight + faint blue + faint violet + faint pink.
+   Twinkle animation, disabled under prefers-reduced-motion.
+   Layout: cosmic-c's working rail + content shell (unchanged).
+   Shell: min(94vw, 88rem). Fluid root. Zero horizontal overflow.
    ====================================================================== */
 
 /* --- TOKENS ----------------------------------------------------------- */
 :root {
-  /* Starlight monochrome — dark only, single mode */
+  /* Base void — unchanged */
   --bg:         #0a0b12;
   --bg-alt:     #11131d;
   --surface:    #141622;
   --ink:        #eef1fa;
   --ink-mid:    #8c92a8;
   --ink-faint:  #4e5364;
-  --accent:     #c4cdf0;   /* primary starlight — stays dominant */
   --rule:       #20232f;
 
-  /* Cool cosmic sub-accents — used subtly, never as large blocks */
-  --accent-blue:   #6f8fff;   /* cosmic blue star */
-  --accent-violet: #a98cff;   /* nebula violet */
-  --accent-cyan:   #6fd0e0;   /* starlight cyan */
+  /* Starlight — primary accent, dominant */
+  --accent:     #c4cdf0;
 
-  /* Knockout fill: subtle starlight→violet gradient across hero words.
-     Text stays #0a0b12 so void letters cut through the gradient fill. */
-  --knockout-fill: #c4cdf0;   /* fallback for no-gradient */
+  /* Cool cosmic sub-accents — vivid, used subtly */
+  --accent-blue:   #5b7cff;   /* cosmic blue   */
+  --accent-violet: #9d5cff;   /* nebula violet */
+  --accent-pink:   #ff5fa8;   /* cosmic pink / magenta */
+
+  /* Knockout fill: nebula sweep gradient across hero words.
+     Text stays #0a0b12 so void letters cut through. */
+  --knockout-fill: #c4cdf0;   /* CSS fallback (no-gradient) */
   --knockout-text: #0a0b12;
 
   /* Type families */
@@ -104,8 +112,8 @@ ul { list-style: none; }
 img, svg { display: block; }
 
 /* --- STARFIELD CANVAS ─────────────────────────────────────────────────
-   Fixed behind everything. Multi-tint: white + faint blue + faint violet.
-   Contained: fixed + overflow:hidden = no bleed, no scroll drift.
+   Fixed behind everything. Multi-tint: white + starlight + faint blue
+   + faint violet + faint pink. Contained: fixed + overflow:hidden.
    ─────────────────────────────────────────────────────────────────────── */
 #starfield {
   position: fixed;
@@ -132,7 +140,7 @@ img, svg { display: block; }
   40%       { opacity: calc(var(--star-op, 0.6) * 0.5); }
 }
 
-/* Apply twinkle to select bright stars — not all, keeps it tasteful */
+/* Select bright stars carry gentle twinkle — not all, keeps it tasteful */
 .star-twinkle-a { animation: twinkle-a 3.8s ease-in-out infinite; }
 .star-twinkle-b { animation: twinkle-b 5.1s ease-in-out infinite; }
 .star-twinkle-c { animation: twinkle-c 4.5s ease-in-out infinite; }
@@ -176,8 +184,8 @@ img, svg { display: block; }
   color: var(--ink);
 }
 
-/* Sphere mark: hue-shifted — outer circle starlight, inner ellipses
-   tinted with blue and violet sub-accents for subtle cosmic depth. */
+/* Sphere mark: outer circle = starlight, meridian = cosmic blue,
+   equatorial = nebula violet. Subtle 3-hue cosmic depth. */
 .mark {
   width: 1.55rem;
   height: 1.55rem;
@@ -185,7 +193,6 @@ img, svg { display: block; }
   fill: none;
   opacity: 0.9;
 }
-/* Individual stroke colors applied per element in SVG attrs below */
 
 .brand-name {
   font-family: var(--f-mono);
@@ -256,9 +263,9 @@ img, svg { display: block; }
 /* ======================================================================
    POSTER HERO BAND
    Void surface, Archivo Black uppercase headline.
-   Knockout: NO + RESEARCHERS. fill = starlight→violet gradient,
-   text = --bg (#0a0b12) so the letterforms cut through as void.
-   Faint nebula radial atmosphere: blue↔violet at low opacity.
+   Knockout gradient: NO + RESEARCHERS. fill = blue→violet→pink sweep.
+   Knockout text = #0a0b12 (void letters cut through the nebula fill).
+   Faint nebula radial atmosphere: blue/violet/pink at ~0.06 opacity.
    ====================================================================== */
 
 .hero-band {
@@ -268,25 +275,28 @@ img, svg { display: block; }
   overflow: hidden;
 }
 
-/* Faint nebula radial atmosphere behind the hero content.
-   Low-opacity blue↔violet — cosmic, not vivid. */
+/* Faint nebula radial atmosphere behind the hero.
+   Three soft ellipses — blue, violet, pink — very low opacity. */
 .hero-band::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 60% at 68% 40%,
-      rgba(111, 143, 255, 0.065) 0%,
-      rgba(169, 140, 255, 0.05) 45%,
+    radial-gradient(ellipse 65% 55% at 65% 38%,
+      rgba(91, 124, 255, 0.06) 0%,
+      rgba(157, 92, 255, 0.05) 45%,
       transparent 80%),
-    radial-gradient(ellipse 40% 50% at 20% 80%,
-      rgba(111, 208, 224, 0.04) 0%,
-      transparent 70%);
+    radial-gradient(ellipse 45% 45% at 15% 75%,
+      rgba(255, 95, 168, 0.04) 0%,
+      transparent 65%),
+    radial-gradient(ellipse 35% 40% at 80% 80%,
+      rgba(157, 92, 255, 0.03) 0%,
+      transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Faint wireframe celestial sphere — large, behind headline */
+/* Faint wireframe celestial sphere — large, behind headline, reads among starfield */
 .hero-sphere-bg {
   position: absolute;
   right: -6%;
@@ -298,24 +308,20 @@ img, svg { display: block; }
   color: var(--accent);
 }
 
-/* Hero text sits above sphere and nebula */
-.hero-band > :not(.hero-sphere-bg):not(.hero-band::before) {
-  position: relative;
-  z-index: 1;
-}
+/* Hero text sits above sphere and nebula atmosphere */
 .hero-band > * { position: relative; z-index: 1; }
 .hero-sphere-bg { z-index: 0; }
 
-/* Eyebrow label — tinted with accent-cyan for a breath of color */
+/* Eyebrow label — starlight accent, subtle */
 .hero-eyebrow {
   display: block;
   font-family: var(--f-mono);
   font-size: var(--small);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent-cyan);
+  color: var(--accent);
   margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
 /* Poster headline */
@@ -334,27 +340,29 @@ img, svg { display: block; }
   max-width: 100%;
 }
 
+/* Each forced line of the hero headline */
 .hero-headline .hl {
   display: block;
   white-space: nowrap;
 }
 
-/* Knockout fill — subtle starlight→violet linear gradient.
-   The void-colored letters (#0a0b12) cut out of the gradient fill.
-   gradient: left=starlight #c4cdf0, right=nebula violet #a98cff. */
+/* Knockout nebula sweep:
+   fill = blue→violet→pink gradient (100deg sweep).
+   text = #0a0b12 (void bg) — letterforms cut out of nebula fill.
+   The starfield shows through the negative letter spaces. */
 .hero-accent-fill {
   display: inline;
   background: linear-gradient(100deg,
-    #c4cdf0 0%,
-    #b8b4f5 35%,
-    #a98cff 100%);
+    #5b7cff 0%,
+    #9d5cff 55%,
+    #ff5fa8 100%);
   color: var(--knockout-text);
   padding: 0.02em 0.1em 0.04em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
-/* Divider rule */
+/* Divider rule: hairline, void-dark */
 .hero-lede-wrap {
   border-top: 1px solid var(--rule);
   margin-top: clamp(1.75rem, 3.5vw, 3rem);
@@ -376,14 +384,15 @@ img, svg { display: block; }
   color: var(--ink);
 }
 
-/* Transition accent bar — tinted violet-blue gradient */
+/* Transition accent bar — nebula gradient hairline */
 .hero-accent-bar {
   width: 100%;
   height: 1px;
   background: linear-gradient(90deg,
     var(--accent-blue) 0%,
     var(--accent) 40%,
-    var(--accent-violet) 100%);
+    var(--accent-violet) 72%,
+    var(--accent-pink) 100%);
   display: block;
   opacity: 0.3;
 }
@@ -397,7 +406,7 @@ img, svg { display: block; }
 }
 
 /* --- PULL QUESTION ────────────────────────────────────────────────────
-   Left rule tinted with accent-violet for a touch of nebula color.     */
+   Left rule tinted with accent-violet.                                  */
 .pull-block {
   padding-left: 1.5rem;
   border-left: 1px solid var(--accent-violet);
@@ -454,6 +463,9 @@ h2.label {
   margin-bottom: 1.25rem;
 }
 
+/* One eyebrow gets a cosmic-blue tint — single purposeful accent */
+h2.label.accent-blue { color: var(--accent-blue); opacity: 0.75; }
+
 h2.display {
   font-family: var(--f-serif);
   font-size: var(--h2-disp);
@@ -468,7 +480,7 @@ h2.display {
 /* --- ELNATH ─────────────────────────────────────────────────────────── */
 .elnath-section { margin-bottom: var(--gap); }
 
-/* Callout card: top border tinted accent-blue for distinction. */
+/* Callout card: top border tinted accent-blue. */
 .elnath-card {
   background: var(--bg-alt);
   border-top: 1px solid var(--accent-blue);
@@ -599,7 +611,7 @@ h2.display {
   color: var(--ink-faint);
 }
 
-/* Period dots: three-color rotation — starlight / blue / violet. */
+/* Footer dots: cycle through blue / violet / pink */
 .sig-dot {
   width: 0.32rem;
   height: 0.32rem;
@@ -607,9 +619,9 @@ h2.display {
   flex-shrink: 0;
   opacity: 0.65;
 }
-.sig-dot:nth-child(1) { background: var(--accent); }
-.sig-dot:nth-child(3) { background: var(--accent-blue); }
-.sig-dot:nth-child(5) { background: var(--accent-violet); }
+.sig-dot:nth-child(1) { background: var(--accent-blue); }
+.sig-dot:nth-child(3) { background: var(--accent-violet); }
+.sig-dot:nth-child(5) { background: var(--accent-pink); }
 
 /* --- FOCUS / ACCESSIBILITY ------------------------------------------- */
 a:focus-visible {
@@ -667,15 +679,16 @@ a:focus-visible {
 <body>
 
 <!-- ── STARFIELD ─────────────────────────────────────────────────────────
-     SVG starfield: multi-tint — white (#eef1fa), accent starlight (#c4cdf0),
-     faint blue (#6f8fff), faint violet (#a98cff). Stars at varied sizes
-     and opacities. Select bright stars carry a gentle twinkle animation.
-     Contained: fixed + overflow:hidden = no bleed, no scroll drift.
+     SVG starfield: multi-tint — white (#eef1fa), starlight (#c4cdf0),
+     faint blue (#5b7cff), faint violet (#9d5cff), faint pink (#ff5fa8).
+     Stars at varied sizes and opacities. Select bright stars carry gentle
+     twinkle animation (disabled under prefers-reduced-motion).
+     Contained: fixed + overflow:hidden — no bleed, no scroll drift.
 ──────────────────────────────────────────────────────────────────────── -->
 <svg id="starfield" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 
-  <!-- Faint distant stars — three tint groups: white / faint-blue / faint-violet -->
-  <!-- white-tinted distant -->
+  <!-- ── Faint distant stars — five tint groups ── -->
+  <!-- white distant -->
   <circle cx="47"  cy="83"  r="0.6" fill="#eef1fa" opacity="0.28"/>
   <circle cx="219" cy="170" r="0.7" fill="#eef1fa" opacity="0.30"/>
   <circle cx="512" cy="38"  r="0.8" fill="#eef1fa" opacity="0.32"/>
@@ -689,29 +702,37 @@ a:focus-visible {
   <circle cx="613" cy="285" r="0.8" fill="#eef1fa" opacity="0.36"/>
   <circle cx="788" cy="298" r="0.5" fill="#eef1fa" opacity="0.20"/>
   <circle cx="958" cy="338" r="0.6" fill="#eef1fa" opacity="0.25"/>
-  <!-- faint blue-tinted distant -->
-  <circle cx="138" cy="41"  r="0.5" fill="#6f8fff" opacity="0.18"/>
-  <circle cx="302" cy="55"  r="0.5" fill="#6f8fff" opacity="0.16"/>
-  <circle cx="601" cy="88"  r="0.5" fill="#6f8fff" opacity="0.17"/>
-  <circle cx="774" cy="62"  r="0.7" fill="#6f8fff" opacity="0.19"/>
-  <circle cx="1121" cy="157" r="0.5" fill="#6f8fff" opacity="0.18"/>
-  <circle cx="1402" cy="133" r="0.5" fill="#6f8fff" opacity="0.16"/>
-  <circle cx="264" cy="276" r="0.5" fill="#6f8fff" opacity="0.17"/>
-  <circle cx="440" cy="258" r="0.7" fill="#6f8fff" opacity="0.19"/>
-  <circle cx="1048" cy="278" r="0.8" fill="#6f8fff" opacity="0.21"/>
-  <circle cx="1340" cy="302" r="0.7" fill="#6f8fff" opacity="0.18"/>
-  <!-- faint violet-tinted distant -->
-  <circle cx="410" cy="120" r="0.6" fill="#a98cff" opacity="0.16"/>
-  <circle cx="855" cy="30"  r="0.5" fill="#a98cff" opacity="0.15"/>
-  <circle cx="1207" cy="44" r="0.6" fill="#a98cff" opacity="0.17"/>
-  <circle cx="528" cy="322" r="0.5" fill="#a98cff" opacity="0.15"/>
-  <circle cx="699" cy="350" r="0.6" fill="#a98cff" opacity="0.18"/>
-  <circle cx="872" cy="265" r="0.7" fill="#a98cff" opacity="0.17"/>
-  <circle cx="1139" cy="315" r="0.5" fill="#a98cff" opacity="0.16"/>
-  <circle cx="1225" cy="258" r="0.6" fill="#a98cff" opacity="0.18"/>
+  <!-- faint blue distant -->
+  <circle cx="138" cy="41"  r="0.5" fill="#5b7cff" opacity="0.16"/>
+  <circle cx="302" cy="55"  r="0.5" fill="#5b7cff" opacity="0.14"/>
+  <circle cx="601" cy="88"  r="0.5" fill="#5b7cff" opacity="0.15"/>
+  <circle cx="774" cy="62"  r="0.7" fill="#5b7cff" opacity="0.17"/>
+  <circle cx="1121" cy="157" r="0.5" fill="#5b7cff" opacity="0.16"/>
+  <circle cx="1402" cy="133" r="0.5" fill="#5b7cff" opacity="0.14"/>
+  <circle cx="264" cy="276" r="0.5" fill="#5b7cff" opacity="0.15"/>
+  <circle cx="440" cy="258" r="0.7" fill="#5b7cff" opacity="0.17"/>
+  <circle cx="1048" cy="278" r="0.8" fill="#5b7cff" opacity="0.19"/>
+  <circle cx="1340" cy="302" r="0.7" fill="#5b7cff" opacity="0.16"/>
+  <!-- faint violet distant -->
+  <circle cx="410" cy="120" r="0.6" fill="#9d5cff" opacity="0.14"/>
+  <circle cx="855" cy="30"  r="0.5" fill="#9d5cff" opacity="0.13"/>
+  <circle cx="1207" cy="44" r="0.6" fill="#9d5cff" opacity="0.15"/>
+  <circle cx="528" cy="322" r="0.5" fill="#9d5cff" opacity="0.13"/>
+  <circle cx="699" cy="350" r="0.6" fill="#9d5cff" opacity="0.16"/>
+  <circle cx="872" cy="265" r="0.7" fill="#9d5cff" opacity="0.15"/>
+  <circle cx="1139" cy="315" r="0.5" fill="#9d5cff" opacity="0.14"/>
+  <circle cx="1225" cy="258" r="0.6" fill="#9d5cff" opacity="0.16"/>
+  <!-- faint pink distant -->
+  <circle cx="330" cy="90"  r="0.5" fill="#ff5fa8" opacity="0.12"/>
+  <circle cx="650" cy="55"  r="0.6" fill="#ff5fa8" opacity="0.13"/>
+  <circle cx="990" cy="130" r="0.5" fill="#ff5fa8" opacity="0.12"/>
+  <circle cx="1280" cy="70" r="0.6" fill="#ff5fa8" opacity="0.11"/>
+  <circle cx="200" cy="360" r="0.5" fill="#ff5fa8" opacity="0.12"/>
+  <circle cx="750" cy="310" r="0.6" fill="#ff5fa8" opacity="0.13"/>
+  <circle cx="1160" cy="360" r="0.5" fill="#ff5fa8" opacity="0.11"/>
 
-  <!-- Mid-range stars — tint rotation: white / starlight / blue / violet -->
-  <!-- white -->
+  <!-- ── Mid-range stars — tint rotation: white / starlight / blue / violet / pink ── -->
+  <!-- white mid -->
   <circle cx="73"  cy="185" r="1.0" fill="#eef1fa" opacity="0.45"/>
   <circle cx="253" cy="142" r="1.0" fill="#eef1fa" opacity="0.42"/>
   <circle cx="378" cy="198" r="1.3" fill="#eef1fa" opacity="0.48"/>
@@ -731,7 +752,7 @@ a:focus-visible {
   <circle cx="1030" cy="488" r="1.3" fill="#eef1fa" opacity="0.51"/>
   <circle cx="1210" cy="475" r="1.0" fill="#eef1fa" opacity="0.39"/>
   <circle cx="1305" cy="450" r="1.2" fill="#eef1fa" opacity="0.46"/>
-  <!-- starlight accent -->
+  <!-- starlight mid -->
   <circle cx="161" cy="225" r="1.2" fill="#c4cdf0" opacity="0.50"/>
   <circle cx="469" cy="162" r="1.0" fill="#c4cdf0" opacity="0.44"/>
   <circle cx="731" cy="230" r="1.0" fill="#c4cdf0" opacity="0.40"/>
@@ -742,23 +763,30 @@ a:focus-visible {
   <circle cx="855" cy="470" r="1.2" fill="#c4cdf0" opacity="0.48"/>
   <circle cx="1120" cy="432" r="1.1" fill="#c4cdf0" opacity="0.47"/>
   <circle cx="1398" cy="490" r="1.0" fill="#c4cdf0" opacity="0.41"/>
-  <!-- blue mid stars -->
-  <circle cx="330" cy="155" r="1.1" fill="#6f8fff" opacity="0.32"/>
-  <circle cx="725" cy="195" r="1.0" fill="#6f8fff" opacity="0.28"/>
-  <circle cx="1155" cy="210" r="1.2" fill="#6f8fff" opacity="0.30"/>
-  <circle cx="450" cy="405" r="1.0" fill="#6f8fff" opacity="0.29"/>
-  <circle cx="900" cy="430" r="1.1" fill="#6f8fff" opacity="0.27"/>
-  <circle cx="1260" cy="460" r="1.0" fill="#6f8fff" opacity="0.31"/>
-  <!-- violet mid stars -->
-  <circle cx="180" cy="195" r="1.0" fill="#a98cff" opacity="0.26"/>
-  <circle cx="580" cy="175" r="1.1" fill="#a98cff" opacity="0.28"/>
-  <circle cx="1020" cy="235" r="1.0" fill="#a98cff" opacity="0.25"/>
-  <circle cx="1400" cy="175" r="1.2" fill="#a98cff" opacity="0.27"/>
-  <circle cx="350" cy="490" r="1.0" fill="#a98cff" opacity="0.26"/>
-  <circle cx="790" cy="465" r="1.1" fill="#a98cff" opacity="0.24"/>
-  <circle cx="1070" cy="500" r="1.0" fill="#a98cff" opacity="0.27"/>
+  <!-- blue mid -->
+  <circle cx="330" cy="155" r="1.1" fill="#5b7cff" opacity="0.28"/>
+  <circle cx="725" cy="195" r="1.0" fill="#5b7cff" opacity="0.25"/>
+  <circle cx="1155" cy="210" r="1.2" fill="#5b7cff" opacity="0.27"/>
+  <circle cx="450" cy="405" r="1.0" fill="#5b7cff" opacity="0.26"/>
+  <circle cx="900" cy="430" r="1.1" fill="#5b7cff" opacity="0.24"/>
+  <circle cx="1260" cy="460" r="1.0" fill="#5b7cff" opacity="0.28"/>
+  <!-- violet mid -->
+  <circle cx="180" cy="195" r="1.0" fill="#9d5cff" opacity="0.24"/>
+  <circle cx="580" cy="175" r="1.1" fill="#9d5cff" opacity="0.25"/>
+  <circle cx="1020" cy="235" r="1.0" fill="#9d5cff" opacity="0.23"/>
+  <circle cx="1400" cy="175" r="1.2" fill="#9d5cff" opacity="0.24"/>
+  <circle cx="350" cy="490" r="1.0" fill="#9d5cff" opacity="0.23"/>
+  <circle cx="790" cy="465" r="1.1" fill="#9d5cff" opacity="0.22"/>
+  <circle cx="1070" cy="500" r="1.0" fill="#9d5cff" opacity="0.24"/>
+  <!-- pink mid -->
+  <circle cx="270" cy="210" r="1.0" fill="#ff5fa8" opacity="0.20"/>
+  <circle cx="650" cy="245" r="1.1" fill="#ff5fa8" opacity="0.22"/>
+  <circle cx="1100" cy="180" r="1.0" fill="#ff5fa8" opacity="0.19"/>
+  <circle cx="490" cy="445" r="1.1" fill="#ff5fa8" opacity="0.21"/>
+  <circle cx="980" cy="470" r="1.0" fill="#ff5fa8" opacity="0.20"/>
+  <circle cx="1330" cy="420" r="1.1" fill="#ff5fa8" opacity="0.19"/>
 
-  <!-- Brighter nearer stars — multi-tint, select carry twinkle class -->
+  <!-- ── Brighter nearer stars — multi-tint, select carry twinkle ── -->
   <!-- white bright -->
   <circle cx="720" cy="108" r="1.5" fill="#eef1fa" opacity="0.70" class="star-twinkle-b" style="--star-op:0.70"/>
   <circle cx="1008" cy="65" r="2.0" fill="#eef1fa" opacity="0.65"/>
@@ -773,7 +801,7 @@ a:focus-visible {
   <circle cx="520" cy="740" r="2.0" fill="#eef1fa" opacity="0.68"/>
   <circle cx="780" cy="775" r="1.6" fill="#eef1fa" opacity="0.58"/>
   <circle cx="1320" cy="762" r="1.5" fill="#eef1fa" opacity="0.62"/>
-  <!-- starlight accent bright -->
+  <!-- starlight bright -->
   <circle cx="455" cy="52"  r="2.2" fill="#c4cdf0" opacity="0.68" class="star-twinkle-a" style="--star-op:0.68"/>
   <circle cx="1290" cy="88" r="1.7" fill="#c4cdf0" opacity="0.73"/>
   <circle cx="340" cy="392" r="2.1" fill="#c4cdf0" opacity="0.71"/>
@@ -783,38 +811,45 @@ a:focus-visible {
   <circle cx="285" cy="760" r="1.5" fill="#c4cdf0" opacity="0.63"/>
   <circle cx="1045" cy="748" r="2.3" fill="#c4cdf0" opacity="0.71"/>
   <!-- cosmic blue bright -->
-  <circle cx="195" cy="97"  r="1.8" fill="#6f8fff" opacity="0.55" class="star-twinkle-c" style="--star-op:0.55"/>
-  <circle cx="580" cy="340" r="1.6" fill="#6f8fff" opacity="0.48"/>
-  <circle cx="1100" cy="300" r="2.0" fill="#6f8fff" opacity="0.50" class="star-twinkle-a" style="--star-op:0.50"/>
-  <circle cx="380" cy="640" r="1.5" fill="#6f8fff" opacity="0.46"/>
-  <circle cx="1050" cy="660" r="1.8" fill="#6f8fff" opacity="0.50" class="star-twinkle-b" style="--star-op:0.50"/>
+  <circle cx="195" cy="97"  r="1.8" fill="#5b7cff" opacity="0.50" class="star-twinkle-c" style="--star-op:0.50"/>
+  <circle cx="580" cy="340" r="1.6" fill="#5b7cff" opacity="0.44"/>
+  <circle cx="1100" cy="300" r="2.0" fill="#5b7cff" opacity="0.46" class="star-twinkle-a" style="--star-op:0.46"/>
+  <circle cx="380" cy="640" r="1.5" fill="#5b7cff" opacity="0.42"/>
+  <circle cx="1050" cy="660" r="1.8" fill="#5b7cff" opacity="0.46" class="star-twinkle-b" style="--star-op:0.46"/>
   <!-- nebula violet bright -->
-  <circle cx="800" cy="80"  r="1.7" fill="#a98cff" opacity="0.45" class="star-twinkle-a" style="--star-op:0.45"/>
-  <circle cx="1360" cy="450" r="1.5" fill="#a98cff" opacity="0.42"/>
-  <circle cx="240" cy="530" r="1.6" fill="#a98cff" opacity="0.44" class="star-twinkle-b" style="--star-op:0.44"/>
-  <circle cx="840" cy="720" r="1.9" fill="#a98cff" opacity="0.47" class="star-twinkle-c" style="--star-op:0.47"/>
+  <circle cx="800" cy="80"  r="1.7" fill="#9d5cff" opacity="0.42" class="star-twinkle-a" style="--star-op:0.42"/>
+  <circle cx="1360" cy="450" r="1.5" fill="#9d5cff" opacity="0.38"/>
+  <circle cx="240" cy="530" r="1.6" fill="#9d5cff" opacity="0.40" class="star-twinkle-b" style="--star-op:0.40"/>
+  <circle cx="840" cy="720" r="1.9" fill="#9d5cff" opacity="0.44" class="star-twinkle-c" style="--star-op:0.44"/>
+  <!-- cosmic pink bright -->
+  <circle cx="550" cy="110" r="1.6" fill="#ff5fa8" opacity="0.36" class="star-twinkle-b" style="--star-op:0.36"/>
+  <circle cx="1200" cy="150" r="1.8" fill="#ff5fa8" opacity="0.38" class="star-twinkle-a" style="--star-op:0.38"/>
+  <circle cx="700" cy="620" r="1.5" fill="#ff5fa8" opacity="0.34"/>
+  <circle cx="1380" cy="680" r="1.7" fill="#ff5fa8" opacity="0.36" class="star-twinkle-c" style="--star-op:0.36"/>
 
   <!-- Tiny scattered fill stars, lower section — tinted mix -->
   <circle cx="155" cy="648" r="0.6" fill="#eef1fa" opacity="0.24"/>
   <circle cx="362" cy="680" r="0.5" fill="#eef1fa" opacity="0.20"/>
   <circle cx="595" cy="655" r="0.7" fill="#c4cdf0" opacity="0.28"/>
-  <circle cx="840" cy="692" r="0.6" fill="#6f8fff" opacity="0.20"/>
+  <circle cx="840" cy="692" r="0.6" fill="#5b7cff" opacity="0.18"/>
   <circle cx="1105" cy="663" r="0.8" fill="#eef1fa" opacity="0.30"/>
-  <circle cx="1380" cy="685" r="0.5" fill="#a98cff" opacity="0.20"/>
+  <circle cx="1380" cy="685" r="0.5" fill="#9d5cff" opacity="0.18"/>
   <circle cx="240" cy="820" r="0.6" fill="#eef1fa" opacity="0.19"/>
   <circle cx="490" cy="845" r="0.8" fill="#eef1fa" opacity="0.26"/>
   <circle cx="720" cy="830" r="0.5" fill="#c4cdf0" opacity="0.22"/>
-  <circle cx="980" cy="858" r="0.7" fill="#6f8fff" opacity="0.18"/>
-  <circle cx="1200" cy="840" r="0.6" fill="#a98cff" opacity="0.19"/>
+  <circle cx="980" cy="858" r="0.7" fill="#5b7cff" opacity="0.16"/>
+  <circle cx="1200" cy="840" r="0.6" fill="#ff5fa8" opacity="0.17"/>
 
   <!-- Soft lens haze around select bright stars — subtle glow -->
   <circle cx="455" cy="52"  r="6"  fill="#c4cdf0" opacity="0.05"/>
-  <circle cx="195" cy="97"  r="7"  fill="#6f8fff" opacity="0.05"/>
-  <circle cx="800" cy="80"  r="6"  fill="#a98cff" opacity="0.04"/>
+  <circle cx="195" cy="97"  r="7"  fill="#5b7cff" opacity="0.05"/>
+  <circle cx="800" cy="80"  r="6"  fill="#9d5cff" opacity="0.04"/>
   <circle cx="905" cy="408" r="8"  fill="#eef1fa" opacity="0.04"/>
-  <circle cx="1100" cy="300" r="7" fill="#6f8fff" opacity="0.04"/>
+  <circle cx="1100" cy="300" r="7" fill="#5b7cff" opacity="0.04"/>
   <circle cx="1240" cy="580" r="7" fill="#c4cdf0" opacity="0.04"/>
-  <circle cx="840" cy="720" r="7"  fill="#a98cff" opacity="0.04"/>
+  <circle cx="840" cy="720" r="7"  fill="#9d5cff" opacity="0.04"/>
+  <circle cx="550" cy="110" r="6"  fill="#ff5fa8" opacity="0.04"/>
+  <circle cx="1200" cy="150" r="7" fill="#ff5fa8" opacity="0.04"/>
 </svg>
 
 <div class="shell">
@@ -822,13 +857,12 @@ a:focus-visible {
   <!-- ── SIDEBAR ────────────────────────────────────────────────────────── -->
   <aside class="rail">
     <a class="brandblock" href="./">
-      <!-- Sphere mark: multi-hue strokes — outer circle starlight,
-           meridian ellipse cosmic-blue, equatorial ellipse nebula-violet.
-           Sub-hues give the wireframe sphere subtle cosmic depth. -->
+      <!-- Sphere mark: outer circle = starlight, meridian = cosmic blue,
+           equatorial = nebula violet. 3-hue subtle cosmic depth. -->
       <svg class="mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1.15">
         <circle cx="16" cy="16" r="12.5" stroke="#c4cdf0"/>
-        <ellipse cx="16" cy="16" rx="5.2" ry="12.5" stroke="#6f8fff"/>
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.6" stroke="#a98cff"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="12.5" stroke="#5b7cff"/>
+        <ellipse cx="16" cy="16" rx="12.5" ry="4.6" stroke="#9d5cff"/>
       </svg>
       <span class="brand-name">Esfera<br>Research</span>
     </a>
@@ -855,7 +889,7 @@ a:focus-visible {
     <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════ -->
     <section class="hero-band" aria-label="Introduction">
 
-      <!-- Faint wireframe celestial sphere — behind headline -->
+      <!-- Faint wireframe celestial sphere — behind headline, reads among starfield -->
       <svg class="hero-sphere-bg" width="640" height="640" viewBox="0 0 700 700" fill="none" aria-hidden="true">
         <circle cx="350" cy="350" r="338" stroke="currentColor" stroke-width="1.5"/>
         <ellipse cx="350" cy="350" rx="128" ry="338" stroke="currentColor" stroke-width="1.5"/>
@@ -897,7 +931,7 @@ a:focus-visible {
 
       <!-- ELNATH -->
       <section class="elnath-section" aria-label="Flagship project">
-        <h2 class="label">The Flagship</h2>
+        <h2 class="label accent-blue">The Flagship</h2>
         <div class="elnath-card">
           <h2 class="display">Elnath</h2>
           <p><span class="elnath-name">Elnath</span> is the agent we build toward: an autonomous personal partner a non-developer can simply talk to and hand their day &mdash; <em>&#8220;sort out my projects, schedule, and what I need to check; don&#8217;t let anything important slip.&#8221;</em> It does the safe work on its own, asks only at the moments that truly carry risk, and is honest when it fails.</p>
