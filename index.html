@@ -13,8 +13,15 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-<!-- No-FOUC theme script: must run before CSS to prevent flash -->
-<script>(function(){var t=localStorage.getItem('esfera-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+<!-- No-FOUC: read localStorage theme and apply before CSS loads -->
+<script>
+  (function(){
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || t === 'light') {
+      document.documentElement.dataset.theme = t;
+    }
+  })();
+</script>
 
 <!-- Google Fonts: Archivo Black (poster hero) + Fraunces (display) + Newsreader (body) + IBM Plex Mono (labels/meta) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,30 +31,43 @@
 <style>
 
 /* ======================================================================
-   ESFERA FINAL — Warm-serif editorial base (fluid) +
-   Bold poster hero (Archivo Black, uppercase, single accent fill).
-   ONE warm accent only: #d5560a (light) / #f58a26 (dark).
-   Fluid root font-size: clamp(15px, calc(0.45vw + 13px), 22px).
-   Shell: min(94vw, 88rem). Rail nav. Full-width body.
-   Light/dark toggle. Semantic HTML. GitHub Pages static-safe.
+   ESFERA — Cosmic C2: Starlight + Nebula — Light + Dark pair
+   Light default (dawn sky / 여명): pale cool dawn blue-lavender base.
+   Dark (void): deep space black, white starlight, vivid accents.
+   Theme toggle: ☀/☾ flips data-theme + persists to localStorage.
    ====================================================================== */
 
-/* --- TOKENS ----------------------------------------------------------- */
+/* ──────────────────────────────────────────────────────────────────────
+   LIGHT TOKENS — default :root (dawn sky)
+   ────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Warm paper palette */
-  --bg:         #f6f1e8;
-  --bg-alt:     #efe9db;
-  --surface:    #f9f5ef;
-  --ink:        #2a241d;
-  --ink-mid:    #5a4e43;
-  --ink-faint:  #9a8e82;
-  --accent:     #d5560a;
-  --rule:       #ccc4b7;
+  --bg:         #eef0f8;
+  --bg-alt:     #e4e8f3;
+  --surface:    #f7f8fc;
+  --ink:        #181a2b;
+  --ink-mid:    #51566e;
+  --ink-faint:  #888ea6;
+  --rule:       #d5d9e8;
 
-  /* Hero band — theme-consistent: light mode uses warm paper, dark uses dark bg */
-  --hero-bg:    var(--bg);
-  --hero-ink:   var(--ink);
-  --hero-rule:  var(--rule);
+  --accent:        #4a57a6;
+  --accent-blue:   #3a52d6;
+  --accent-violet: #7a3fd0;
+  --accent-pink:   #cf3f86;
+
+  /* Knockout: light theme — gradient uses deepened accents, letters cut to pale bg */
+  --knockout-text: #eef0f8;
+
+  /* Star decor vars — light theme: deep-ink faint dots */
+  --star-base-white:  #181a2b;
+  --star-base-sl:     #4a57a6;
+  --star-base-blue:   #3a52d6;
+  --star-base-violet: #7a3fd0;
+  --star-base-pink:   #cf3f86;
+  --star-opacity-scale: 0.13;    /* multiplier concept — actual opacities set in SVG via CSS vars below */
+  --starfield-opacity: 0.18;     /* overall starfield opacity in light mode */
+
+  /* Nebula opacity in light */
+  --nebula-opacity: 0.07;
 
   /* Type families */
   --f-poster: "Archivo Black", "Arial Black", sans-serif;
@@ -56,10 +76,6 @@
   --f-mono:   "IBM Plex Mono", "Courier New", monospace;
 
   /* ── FLUID TYPE SCALE ──────────────────────────────────────────────── */
-  /* Tuned so "RESEARCHERS." (longest line) fits the main column at ~390px viewport.
-     At 390px: shell is min(94vw,88rem)=366px, rail collapses (mobile), main=366px,
-     padding ~2×clamp(1rem,4vw,2.5rem)≈2×1.4rem=2.8rem usable≈337px.
-     At 5.8vw: 390×0.058≈22.6px root-capped → ~1.5rem. Empirically safe floor=2.2rem. */
   --hero-poster: clamp(2.2rem, 5.8vw, 9rem);
   --hero:        clamp(2.8rem, 6.2vw, 7.5rem);
   --h2-disp:     clamp(1.35rem, 2.6vw, 2.6rem);
@@ -77,32 +93,90 @@
   --pull-max:  54ch;
 }
 
-/* Dark mode: OS preference */
+/* ──────────────────────────────────────────────────────────────────────
+   DARK TOKENS — auto (OS preference, not overridden by data-theme)
+   ────────────────────────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #181410;
-    --bg-alt:    #1f1b17;
-    --surface:   #231f1b;
-    --ink:       #ede6da;
-    --ink-mid:   #a49a8e;
-    --ink-faint: #4a4440;
-    --accent:    #f58a26;
-    --rule:      #302a24;
-    /* hero-bg/ink/rule inherit from var(--bg)/var(--ink)/var(--rule) — no override needed */
+    --bg:         #0a0b12;
+    --bg-alt:     #11131d;
+    --surface:    #141622;
+    --ink:        #eef1fa;
+    --ink-mid:    #8c92a8;
+    --ink-faint:  #4e5364;
+    --rule:       #20232f;
+
+    --accent:        #c4cdf0;
+    --accent-blue:   #5b7cff;
+    --accent-violet: #9d5cff;
+    --accent-pink:   #ff5fa8;
+
+    --knockout-text: #0a0b12;
+
+    --star-base-white:  #eef1fa;
+    --star-base-sl:     #c4cdf0;
+    --star-base-blue:   #5b7cff;
+    --star-base-violet: #9d5cff;
+    --star-base-pink:   #ff5fa8;
+    --starfield-opacity: 1;
+    --nebula-opacity: 1;
   }
 }
 
-/* Forced dark via toggle */
+/* ──────────────────────────────────────────────────────────────────────
+   DARK TOKENS — manual force dark
+   ────────────────────────────────────────────────────────────────────── */
 :root[data-theme="dark"] {
-  --bg:        #181410;
-  --bg-alt:    #1f1b17;
-  --surface:   #231f1b;
-  --ink:       #ede6da;
-  --ink-mid:   #a49a8e;
-  --ink-faint: #4a4440;
-  --accent:    #f58a26;
-  --rule:      #302a24;
-  /* hero-bg/ink/rule inherit from var(--bg)/var(--ink)/var(--rule) — no override needed */
+  --bg:         #0a0b12;
+  --bg-alt:     #11131d;
+  --surface:    #141622;
+  --ink:        #eef1fa;
+  --ink-mid:    #8c92a8;
+  --ink-faint:  #4e5364;
+  --rule:       #20232f;
+
+  --accent:        #c4cdf0;
+  --accent-blue:   #5b7cff;
+  --accent-violet: #9d5cff;
+  --accent-pink:   #ff5fa8;
+
+  --knockout-text: #0a0b12;
+
+  --star-base-white:  #eef1fa;
+  --star-base-sl:     #c4cdf0;
+  --star-base-blue:   #5b7cff;
+  --star-base-violet: #9d5cff;
+  --star-base-pink:   #ff5fa8;
+  --starfield-opacity: 1;
+  --nebula-opacity: 1;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   LIGHT TOKENS — manual force light (overrides dark OS pref)
+   ────────────────────────────────────────────────────────────────────── */
+:root[data-theme="light"] {
+  --bg:         #eef0f8;
+  --bg-alt:     #e4e8f3;
+  --surface:    #f7f8fc;
+  --ink:        #181a2b;
+  --ink-mid:    #51566e;
+  --ink-faint:  #888ea6;
+  --rule:       #d5d9e8;
+
+  --accent:        #4a57a6;
+  --accent-blue:   #3a52d6;
+  --accent-violet: #7a3fd0;
+  --accent-pink:   #cf3f86;
+
+  --knockout-text: #eef0f8;
+
+  --star-base-white:  #181a2b;
+  --star-base-sl:     #4a57a6;
+  --star-base-blue:   #3a52d6;
+  --star-base-violet: #7a3fd0;
+  --star-base-pink:   #cf3f86;
+  --starfield-opacity: 0.18;
+  --nebula-opacity: 0.07;
 }
 
 /* --- RESET ------------------------------------------------------------ */
@@ -113,7 +187,7 @@ html {
   font-size: clamp(15px, calc(0.45vw + 13px), 22px);
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  overflow-x: hidden; /* BUG 2: prevent horizontal scroll */
+  overflow-x: hidden;
 }
 
 body {
@@ -125,13 +199,109 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden; /* BUG 2: backstop */
+  overflow-x: hidden;
   max-width: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
 img, svg { display: block; }
+
+/* --- STARFIELD CANVAS ─────────────────────────────────────────────────
+   Fixed behind everything. In dark: full opacity, multi-tint white/starlight.
+   In light: overall opacity reduced via --starfield-opacity — dawn sky
+   has few visible stars; dark-ink dots replace white dots.
+   ─────────────────────────────────────────────────────────────────────── */
+#starfield {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: var(--starfield-opacity);
+  transition: opacity 0.3s ease;
+}
+
+/* Individual star colors respond to theme via CSS variable fills */
+.s-w  { fill: var(--star-base-white); }
+.s-sl { fill: var(--star-base-sl); }
+.s-b  { fill: var(--star-base-blue); }
+.s-v  { fill: var(--star-base-violet); }
+.s-pk { fill: var(--star-base-pink); }
+
+/* ── STAR TWINKLE ANIMATION ───────────────────────────────────────────── */
+@keyframes twinkle-a {
+  0%, 100% { opacity: var(--star-op, 0.4); }
+  50%       { opacity: calc(var(--star-op, 0.4) * 0.45); }
+}
+@keyframes twinkle-b {
+  0%, 100% { opacity: var(--star-op, 0.5); }
+  33%       { opacity: calc(var(--star-op, 0.5) * 0.35); }
+  66%       { opacity: calc(var(--star-op, 0.5) * 0.8); }
+}
+@keyframes twinkle-c {
+  0%, 100% { opacity: var(--star-op, 0.6); }
+  40%       { opacity: calc(var(--star-op, 0.6) * 0.5); }
+}
+
+.star-twinkle-a { animation: twinkle-a 3.8s ease-in-out infinite; }
+.star-twinkle-b { animation: twinkle-b 5.1s ease-in-out infinite; }
+.star-twinkle-c { animation: twinkle-c 4.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star-twinkle-a,
+  .star-twinkle-b,
+  .star-twinkle-c { animation: none; }
+}
+
+/* --- THEME TOGGLE ──────────────────────────────────────────────────────
+   Positioned at bottom of rail on desktop, inline on mobile.
+   Pill button: subtle bg, icon flips with theme.
+   ─────────────────────────────────────────────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.72rem;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  cursor: pointer;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+  color: var(--ink-faint);
+  transition: border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--ink-mid);
+}
+.theme-toggle:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* The icon span — swap ☀ / ☾ based on current theme via CSS */
+.theme-toggle .tog-icon { font-style: normal; font-size: 0.9em; }
+
+/* Default (light): show moon icon (click → go dark) */
+.tog-sun { display: none; }
+.tog-moon { display: inline; }
+
+/* Dark state: show sun icon (click → go light) */
+:root[data-theme="dark"] .tog-sun  { display: inline; }
+:root[data-theme="dark"] .tog-moon { display: none; }
+
+/* Auto dark (OS dark, no data-theme): also show sun */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tog-sun  { display: inline; }
+  :root:not([data-theme="light"]) .tog-moon { display: none; }
+}
 
 /* --- FLUID SHELL ─────────────────────────────────────────────────────── */
 .shell {
@@ -140,6 +310,8 @@ img, svg { display: block; }
   width: min(94vw, 88rem);
   margin-inline: auto;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 /* --- RAIL ------------------------------------------------------------- */
@@ -151,7 +323,7 @@ img, svg { display: block; }
   flex-direction: column;
   padding: var(--pad-top) 1.5rem var(--pad-top) 0;
   border-right: 1px solid var(--rule);
-  background: var(--bg);
+  background: transparent;
   overflow: hidden;
   z-index: 20;
 }
@@ -163,14 +335,13 @@ img, svg { display: block; }
   color: var(--ink);
 }
 
-/* Sphere mark: engraved globe lines, accent stroke */
+/* Sphere mark: strokes use theme accent vars */
 .mark {
   width: 1.55rem;
   height: 1.55rem;
   flex-shrink: 0;
-  stroke: var(--accent);
   fill: none;
-  opacity: 0.88;
+  opacity: 0.9;
 }
 
 .brand-name {
@@ -194,27 +365,6 @@ img, svg { display: block; }
 .lang .on { color: var(--accent); }
 .lang a { color: var(--ink-faint); }
 .lang a:hover { color: var(--ink-mid); }
-
-/* Theme toggle */
-.theme-toggle {
-  display: inline;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-family: var(--f-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.05em;
-  color: var(--ink-faint);
-  cursor: pointer;
-  line-height: 1;
-  transition: color 0.14s ease;
-}
-.theme-toggle:hover { color: var(--accent); }
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
 
 .rail-sep {
   width: 1.5rem;
@@ -250,49 +400,81 @@ img, svg { display: block; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
+  margin-bottom: 0.6rem;
 }
 
 /* --- MAIN ------------------------------------------------------------- */
 .main {
-  /* No top padding — hero section fills from top edge of main */
   padding-bottom: calc(var(--pad-top) * 1.6);
-  min-width: 0;    /* BUG 2: prevent grid child from overflowing */
-  max-width: 100%; /* BUG 2: backstop */
-  overflow-x: hidden; /* BUG 2: clip any stray overflow within column */
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* ======================================================================
    POSTER HERO BAND
-   Dark band, Archivo Black uppercase headline, ONE accent fill word.
-   Works in both light and dark mode (hero-bg is always near-dark).
    ====================================================================== */
 
 .hero-band {
-  background: var(--hero-bg);
-  padding: clamp(3rem, 7vw, 6.5rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
-  position: relative;   /* anchor for faint sphere */
-  overflow: hidden;     /* contain sphere — no bleed beyond band */
+  background: transparent;
+  padding: clamp(2rem, 4.5vw, 4rem) var(--pad-side) clamp(2.5rem, 5vw, 5rem);
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
-/* Faint background sphere — D-b treatment, low opacity, accent-tinted, behind text */
-.hero-sphere-bg {
+/* Nebula bloom — theme-aware via CSS: opacity is the main lever.
+   Dark: full nebula atmosphere (~0.12–0.18).
+   Light: same hues, much softer (~0.06–0.10), a subtle dawn wash.
+   The ::before pseudo uses actual rgba but we control via the
+   --nebula-opacity custom prop which wraps the whole layer. */
+.hero-band::before {
+  content: '';
   position: absolute;
-  right: -6%;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.06;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 76% 22%,
+      rgba(91, 124, 255, 0.15) 0%,
+      rgba(157, 92, 255, 0.11) 42%,
+      rgba(255, 95, 168, 0.05) 68%,
+      transparent 88%),
+    radial-gradient(ellipse 40% 38% at 80% 10%,
+      rgba(157, 92, 255, 0.10) 0%,
+      rgba(91, 124, 255, 0.06) 55%,
+      transparent 80%),
+    radial-gradient(ellipse 30% 28% at 62% 38%,
+      rgba(255, 95, 168, 0.07) 0%,
+      transparent 65%);
   pointer-events: none;
   z-index: 0;
-  color: var(--accent); /* SVG uses currentColor for accent tint */
+  opacity: var(--nebula-opacity);
+  transition: opacity 0.3s ease;
 }
 
-/* Ensure hero text sits above sphere */
-.hero-band > :not(.hero-sphere-bg) {
-  position: relative;
-  z-index: 1;
+/* Wireframe celestial sphere — upper-right focal point. */
+.hero-sphere-bg {
+  position: absolute;
+  right: -4%;
+  top: -2%;
+  width: clamp(360px, 56vw, 760px);
+  height: clamp(360px, 56vw, 760px);
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--accent);
 }
 
-/* Eyebrow label above the headline */
+.hero-band > *:not(.hero-sphere-bg) { position: relative; z-index: 1; }
+.hero-sphere-bg { position: absolute !important; z-index: 0; }
+
+.hero-upper-spacer {
+  flex: 1;
+  min-height: clamp(1rem, 6vw, 3rem);
+}
+
 .hero-eyebrow {
   display: block;
   font-family: var(--f-mono);
@@ -301,66 +483,48 @@ img, svg { display: block; }
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  opacity: 0.7;
 }
 
-/* Poster headline — Archivo Black, huge, uppercase */
 .hero-headline {
   font-family: var(--f-poster);
   font-size: var(--hero-poster);
-  font-weight: 400; /* Archivo Black is a single-weight face */
+  font-weight: 400;
   line-height: 0.93;
   letter-spacing: -0.025em;
   text-transform: uppercase;
-  color: var(--hero-ink);
+  color: var(--ink);
   margin-bottom: 0;
-  hyphens: none;           /* BUG 3: never break words mid-word */
-  overflow-wrap: normal;   /* BUG 2: don't let browser force-break to prevent overflow */
+  hyphens: none;
+  overflow-wrap: normal;
   word-break: normal;
-  max-width: 100%;         /* BUG 2: stay within column */
+  max-width: 100%;
 }
 
-/* Each forced line of the hero headline */
 .hero-headline .hl {
   display: block;
-  white-space: nowrap; /* keep each explicit line on one row */
+  white-space: nowrap;
 }
 
-/* Accent fill word — solid warm fill, KNOCKOUT text (letters cut out of orange fill).
-   color: var(--bg) = page surface (cream in light, warm-dark in dark) so letters
-   appear as negative space through the fill, exactly like D-b treatment. */
+/* Knockout nebula sweep — theme-aware.
+   Gradient fill block (blue→violet→pink) + text color = var(--bg).
+   Dark:  --bg is void (#0a0b12) → letters appear as void cut-outs in nebula.
+   Light: --bg is dawn pale (#eef0f8) → letters appear as pale cut-outs in gradient.
+   The starfield / page bg shows through the negative letter spaces. */
 .hero-accent-fill {
   display: inline;
-  background: var(--accent);
-  color: var(--bg);   /* KNOCKOUT: text = page surface, not black */
-  /* Slight horizontal padding so fill extends just past letter edges */
+  background: linear-gradient(100deg,
+    var(--accent-blue) 0%,
+    var(--accent-violet) 55%,
+    var(--accent-pink) 100%);
+  color: var(--bg);
   padding: 0.02em 0.1em 0.04em;
-  /* box-decoration-break so fill repaints per-line if it ever wraps */
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
-/* Divider rule between hero band and editorial body */
-.hero-to-body {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  padding: 0 var(--pad-side);
-  background: var(--hero-bg);
-}
-
-/* Transition bar: accent left stroke + text lede sitting on the dark band */
-.hero-lede-band {
-  background: var(--hero-bg);
-  padding: clamp(1.8rem, 3.5vw, 3rem) var(--pad-side) clamp(2.2rem, 4vw, 3.5rem);
-  border-left: 3px solid var(--accent);
-  /* accent left rule acts as the intentional editorial bridge */
-  margin-left: var(--pad-side);
-  margin-right: var(--pad-side);
-}
-
-/* Actually, simpler: lede sits in hero-band with a top rule */
 .hero-lede-wrap {
-  border-top: 1px solid var(--rule); /* BUG 1: was --hero-rule (always dark); now theme-aware */
+  border-top: 1px solid var(--rule);
   margin-top: clamp(1.75rem, 3.5vw, 3rem);
   padding-top: clamp(1.5rem, 3vw, 2.5rem);
 }
@@ -370,38 +534,42 @@ img, svg { display: block; }
   font-size: clamp(0.92rem, 1.5vw, 1.1rem);
   font-weight: 400;
   line-height: 1.78;
-  color: var(--ink-mid); /* BUG 1: was hardcoded light rgba; now theme-aware */
+  color: var(--ink-mid);
   max-width: 58ch;
   font-style: italic;
 }
 
 .hero-lede em {
   font-style: normal;
-  color: var(--ink); /* BUG 1: was hardcoded --hero-ink; now theme-aware */
+  color: var(--ink);
 }
 
-/* Transition accent bar — accent-colored 3px rule at base of hero band */
 .hero-accent-bar {
   width: 100%;
-  height: 3px;
-  background: var(--accent);
+  height: 1px;
+  background: linear-gradient(90deg,
+    var(--accent-blue) 0%,
+    var(--accent) 40%,
+    var(--accent-violet) 72%,
+    var(--accent-pink) 100%);
   display: block;
+  opacity: 0.3;
 }
 
 /* ======================================================================
-   EDITORIAL BODY — warm serif (fluid base preserved exactly)
+   EDITORIAL BODY
    ====================================================================== */
 
 .editorial {
   padding: clamp(2.5rem, 5vw, 4.5rem) var(--pad-side) 0;
 }
 
-/* --- PULL QUESTION ---------------------------------------------------- */
 .pull-block {
   padding-left: 1.5rem;
-  border-left: 2.5px solid var(--accent);
+  border-left: 1px solid var(--accent-violet);
   margin-bottom: var(--gap);
   max-width: var(--pull-max);
+  opacity: 0.9;
 }
 
 .pull-q {
@@ -420,7 +588,6 @@ img, svg { display: block; }
   color: var(--accent);
 }
 
-/* --- HERO RULE -------------------------------------------------------- */
 .hero-rule {
   border: none;
   border-top: 1px solid var(--rule);
@@ -428,7 +595,6 @@ img, svg { display: block; }
   max-width: var(--prose-max);
 }
 
-/* --- PROSE ------------------------------------------------------------ */
 .prose-block {
   margin-bottom: var(--gap);
   max-width: var(--prose-max);
@@ -441,7 +607,6 @@ img, svg { display: block; }
   color: var(--ink-mid);
 }
 
-/* --- SECTION LABELS --------------------------------------------------- */
 h2.label {
   font-family: var(--f-mono);
   font-size: var(--small);
@@ -451,6 +616,8 @@ h2.label {
   color: var(--ink-faint);
   margin-bottom: 1.25rem;
 }
+
+h2.label.accent-blue { color: var(--accent-blue); opacity: 0.75; }
 
 h2.display {
   font-family: var(--f-serif);
@@ -463,12 +630,12 @@ h2.display {
   margin-bottom: clamp(0.9rem, 1.8vw, 1.5rem);
 }
 
-/* --- ELNATH ----------------------------------------------------------- */
+/* --- ELNATH ─────────────────────────────────────────────────────────── */
 .elnath-section { margin-bottom: var(--gap); }
 
 .elnath-card {
   background: var(--bg-alt);
-  border-top: 2px solid var(--accent);
+  border-top: 1px solid var(--accent-blue);
   border-left: 1px solid var(--rule);
   border-right: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
@@ -496,7 +663,7 @@ h2.display {
 
 .elnath-card em { font-style: italic; color: var(--accent); }
 
-/* --- STUDYING LIST ---------------------------------------------------- */
+/* --- STUDYING LIST ─────────────────────────────────────────────────── */
 .studying-section { margin-bottom: var(--gap); }
 
 .studying-list {
@@ -522,6 +689,7 @@ h2.display {
   color: var(--accent);
   font-family: var(--f-serif);
   font-weight: 300;
+  opacity: 0.7;
 }
 
 .studying-list li em {
@@ -529,7 +697,7 @@ h2.display {
   color: var(--ink);
 }
 
-/* --- PRINCIPLES ------------------------------------------------------- */
+/* --- PRINCIPLES ─────────────────────────────────────────────────────── */
 .how-section { margin-bottom: var(--gap); }
 
 .principles {
@@ -558,7 +726,7 @@ h2.display {
   display: inline;
 }
 
-/* --- DAY ZERO --------------------------------------------------------- */
+/* --- DAY ZERO ─────────────────────────────────────────────────────── */
 .day-zero-section {
   margin-bottom: var(--gap);
   max-width: var(--prose-max);
@@ -576,7 +744,7 @@ h2.display {
   color: var(--ink);
 }
 
-/* --- FOOTER ----------------------------------------------------------- */
+/* --- FOOTER ─────────────────────────────────────────────────────────── */
 .foot-rule {
   border: none;
   border-top: 1px solid var(--rule);
@@ -599,18 +767,21 @@ h2.display {
   width: 0.32rem;
   height: 0.32rem;
   border-radius: 50%;
-  background: var(--accent);
   flex-shrink: 0;
+  opacity: 0.65;
 }
+.sig-dot:nth-child(1) { background: var(--accent-blue); }
+.sig-dot:nth-child(3) { background: var(--accent-violet); }
+.sig-dot:nth-child(5) { background: var(--accent-pink); }
 
 /* --- FOCUS / ACCESSIBILITY ------------------------------------------- */
 a:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 1px solid var(--accent);
   outline-offset: 3px;
 }
 
 /* --- NARROW TABLET — collapse rail to top bar ─────────────────────── */
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   .shell {
     grid-template-columns: 1fr;
     width: min(96vw, 88rem);
@@ -641,9 +812,27 @@ a:focus-visible {
     border-top: 1px solid var(--rule);
   }
 
+  /* Toggle goes to end of rail row on mobile */
+  .theme-toggle {
+    margin-left: auto;
+  }
+
   .hero-band {
     padding-left: clamp(1rem, 4vw, 2.5rem);
     padding-right: clamp(1rem, 4vw, 2.5rem);
+    min-height: unset;
+  }
+
+  .hero-sphere-bg {
+    width: clamp(220px, 75vw, 320px);
+    height: clamp(220px, 75vw, 320px);
+    right: -8%;
+    top: -2%;
+  }
+
+  .hero-upper-spacer {
+    flex: 0;
+    min-height: 0;
   }
 
   .editorial {
@@ -657,23 +846,265 @@ a:focus-visible {
 </style>
 </head>
 <body>
+
+<!-- ── STARFIELD ─────────────────────────────────────────────────────────
+     SVG starfield: multi-tint stars using CSS class fills so they respond
+     to theme via CSS vars (--star-base-*). Overall opacity controlled by
+     --starfield-opacity: 1 in dark (full void), 0.18 in light (dawn sky
+     — few faint stars, fitting "여명" look).
+     Classes: s-w (white/ink), s-sl (starlight/accent), s-b (blue),
+              s-v (violet), s-pk (pink)
+──────────────────────────────────────────────────────────────────────── -->
+<svg id="starfield" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+  <!-- ── Faint distant stars ── -->
+  <circle cx="47"  cy="83"  r="0.6" class="s-w" opacity="0.28"/>
+  <circle cx="219" cy="170" r="0.7" class="s-w" opacity="0.30"/>
+  <circle cx="512" cy="38"  r="0.8" class="s-w" opacity="0.32"/>
+  <circle cx="688" cy="145" r="0.6" class="s-w" opacity="0.27"/>
+  <circle cx="943" cy="108" r="0.6" class="s-w" opacity="0.29"/>
+  <circle cx="1035" cy="72" r="0.8" class="s-w" opacity="0.33"/>
+  <circle cx="1318" cy="95" r="0.7" class="s-w" opacity="0.31"/>
+  <circle cx="88"  cy="248" r="0.6" class="s-w" opacity="0.23"/>
+  <circle cx="175" cy="315" r="0.8" class="s-w" opacity="0.35"/>
+  <circle cx="349" cy="340" r="0.6" class="s-w" opacity="0.28"/>
+  <circle cx="613" cy="285" r="0.8" class="s-w" opacity="0.36"/>
+  <circle cx="788" cy="298" r="0.5" class="s-w" opacity="0.20"/>
+  <circle cx="958" cy="338" r="0.6" class="s-w" opacity="0.25"/>
+  <!-- faint blue distant -->
+  <circle cx="138" cy="41"  r="0.5" class="s-b" opacity="0.16"/>
+  <circle cx="302" cy="55"  r="0.5" class="s-b" opacity="0.14"/>
+  <circle cx="601" cy="88"  r="0.5" class="s-b" opacity="0.15"/>
+  <circle cx="774" cy="62"  r="0.7" class="s-b" opacity="0.17"/>
+  <circle cx="1121" cy="157" r="0.5" class="s-b" opacity="0.16"/>
+  <circle cx="1402" cy="133" r="0.5" class="s-b" opacity="0.14"/>
+  <circle cx="264" cy="276" r="0.5" class="s-b" opacity="0.15"/>
+  <circle cx="440" cy="258" r="0.7" class="s-b" opacity="0.17"/>
+  <circle cx="1048" cy="278" r="0.8" class="s-b" opacity="0.19"/>
+  <circle cx="1340" cy="302" r="0.7" class="s-b" opacity="0.16"/>
+  <!-- faint violet distant -->
+  <circle cx="410" cy="120" r="0.6" class="s-v" opacity="0.14"/>
+  <circle cx="855" cy="30"  r="0.5" class="s-v" opacity="0.13"/>
+  <circle cx="1207" cy="44" r="0.6" class="s-v" opacity="0.15"/>
+  <circle cx="528" cy="322" r="0.5" class="s-v" opacity="0.13"/>
+  <circle cx="699" cy="350" r="0.6" class="s-v" opacity="0.16"/>
+  <circle cx="872" cy="265" r="0.7" class="s-v" opacity="0.15"/>
+  <circle cx="1139" cy="315" r="0.5" class="s-v" opacity="0.14"/>
+  <circle cx="1225" cy="258" r="0.6" class="s-v" opacity="0.16"/>
+  <!-- faint pink distant -->
+  <circle cx="330" cy="90"  r="0.5" class="s-pk" opacity="0.12"/>
+  <circle cx="650" cy="55"  r="0.6" class="s-pk" opacity="0.13"/>
+  <circle cx="990" cy="130" r="0.5" class="s-pk" opacity="0.12"/>
+  <circle cx="1280" cy="70" r="0.6" class="s-pk" opacity="0.11"/>
+  <circle cx="200" cy="360" r="0.5" class="s-pk" opacity="0.12"/>
+  <circle cx="750" cy="310" r="0.6" class="s-pk" opacity="0.13"/>
+  <circle cx="1160" cy="360" r="0.5" class="s-pk" opacity="0.11"/>
+
+  <!-- ── Mid-range stars ── -->
+  <circle cx="73"  cy="185" r="1.0" class="s-w" opacity="0.45"/>
+  <circle cx="253" cy="142" r="1.0" class="s-w" opacity="0.42"/>
+  <circle cx="378" cy="198" r="1.3" class="s-w" opacity="0.48"/>
+  <circle cx="557" cy="210" r="1.1" class="s-w" opacity="0.46"/>
+  <circle cx="643" cy="175" r="1.2" class="s-w" opacity="0.52"/>
+  <circle cx="820" cy="188" r="1.3" class="s-w" opacity="0.47"/>
+  <circle cx="910" cy="150" r="1.0" class="s-w" opacity="0.43"/>
+  <circle cx="1088" cy="172" r="1.2" class="s-w" opacity="0.45"/>
+  <circle cx="1178" cy="228" r="1.0" class="s-w" opacity="0.38"/>
+  <circle cx="1378" cy="220" r="1.0" class="s-w" opacity="0.44"/>
+  <circle cx="112" cy="420" r="1.1" class="s-w" opacity="0.46"/>
+  <circle cx="320" cy="435" r="1.2" class="s-w" opacity="0.50"/>
+  <circle cx="487" cy="480" r="1.0" class="s-w" opacity="0.38"/>
+  <circle cx="670" cy="490" r="1.1" class="s-w" opacity="0.44"/>
+  <circle cx="762" cy="428" r="1.0" class="s-w" opacity="0.40"/>
+  <circle cx="942" cy="445" r="1.0" class="s-w" opacity="0.43"/>
+  <circle cx="1030" cy="488" r="1.3" class="s-w" opacity="0.51"/>
+  <circle cx="1210" cy="475" r="1.0" class="s-w" opacity="0.39"/>
+  <circle cx="1305" cy="450" r="1.2" class="s-w" opacity="0.46"/>
+  <!-- starlight mid -->
+  <circle cx="161" cy="225" r="1.2" class="s-sl" opacity="0.50"/>
+  <circle cx="469" cy="162" r="1.0" class="s-sl" opacity="0.44"/>
+  <circle cx="731" cy="230" r="1.0" class="s-sl" opacity="0.40"/>
+  <circle cx="999" cy="215" r="1.1" class="s-sl" opacity="0.51"/>
+  <circle cx="1270" cy="190" r="1.3" class="s-sl" opacity="0.49"/>
+  <circle cx="228" cy="465" r="1.0" class="s-sl" opacity="0.42"/>
+  <circle cx="582" cy="448" r="1.3" class="s-sl" opacity="0.53"/>
+  <circle cx="855" cy="470" r="1.2" class="s-sl" opacity="0.48"/>
+  <circle cx="1120" cy="432" r="1.1" class="s-sl" opacity="0.47"/>
+  <circle cx="1398" cy="490" r="1.0" class="s-sl" opacity="0.41"/>
+  <!-- blue mid -->
+  <circle cx="330" cy="155" r="1.1" class="s-b" opacity="0.28"/>
+  <circle cx="725" cy="195" r="1.0" class="s-b" opacity="0.25"/>
+  <circle cx="1155" cy="210" r="1.2" class="s-b" opacity="0.27"/>
+  <circle cx="450" cy="405" r="1.0" class="s-b" opacity="0.26"/>
+  <circle cx="900" cy="430" r="1.1" class="s-b" opacity="0.24"/>
+  <circle cx="1260" cy="460" r="1.0" class="s-b" opacity="0.28"/>
+  <!-- violet mid -->
+  <circle cx="180" cy="195" r="1.0" class="s-v" opacity="0.24"/>
+  <circle cx="580" cy="175" r="1.1" class="s-v" opacity="0.25"/>
+  <circle cx="1020" cy="235" r="1.0" class="s-v" opacity="0.23"/>
+  <circle cx="1400" cy="175" r="1.2" class="s-v" opacity="0.24"/>
+  <circle cx="350" cy="490" r="1.0" class="s-v" opacity="0.23"/>
+  <circle cx="790" cy="465" r="1.1" class="s-v" opacity="0.22"/>
+  <circle cx="1070" cy="500" r="1.0" class="s-v" opacity="0.24"/>
+  <!-- pink mid -->
+  <circle cx="270" cy="210" r="1.0" class="s-pk" opacity="0.20"/>
+  <circle cx="650" cy="245" r="1.1" class="s-pk" opacity="0.22"/>
+  <circle cx="1100" cy="180" r="1.0" class="s-pk" opacity="0.19"/>
+  <circle cx="490" cy="445" r="1.1" class="s-pk" opacity="0.21"/>
+  <circle cx="980" cy="470" r="1.0" class="s-pk" opacity="0.20"/>
+  <circle cx="1330" cy="420" r="1.1" class="s-pk" opacity="0.19"/>
+
+  <!-- ── Brighter nearer stars — select carry twinkle ── -->
+  <!-- white bright -->
+  <circle cx="720" cy="108" r="1.5" class="s-w" opacity="0.70" class="star-twinkle-b" style="--star-op:0.70"/>
+  <circle cx="1008" cy="65" r="2.0" class="s-w" opacity="0.65"/>
+  <circle cx="62"  cy="370" r="1.5" class="s-w" opacity="0.68"/>
+  <circle cx="625" cy="378" r="1.6" class="s-w star-twinkle-c" opacity="0.66" style="--star-op:0.66"/>
+  <circle cx="905" cy="408" r="2.3" class="s-w" opacity="0.74"/>
+  <circle cx="1412" cy="362" r="1.5" class="s-w" opacity="0.64"/>
+  <circle cx="130" cy="560" r="2.0" class="s-w" opacity="0.67"/>
+  <circle cx="680" cy="565" r="2.2" class="s-w star-twinkle-a" opacity="0.72" style="--star-op:0.72"/>
+  <circle cx="955" cy="600" r="1.7" class="s-w" opacity="0.65"/>
+  <circle cx="75"  cy="730" r="1.8" class="s-w" opacity="0.60"/>
+  <circle cx="520" cy="740" r="2.0" class="s-w" opacity="0.68"/>
+  <circle cx="780" cy="775" r="1.6" class="s-w" opacity="0.58"/>
+  <circle cx="1320" cy="762" r="1.5" class="s-w" opacity="0.62"/>
+  <!-- starlight bright -->
+  <circle cx="455" cy="52"  r="2.2" class="s-sl star-twinkle-a" opacity="0.68" style="--star-op:0.68"/>
+  <circle cx="1290" cy="88" r="1.7" class="s-sl" opacity="0.73"/>
+  <circle cx="340" cy="392" r="2.1" class="s-sl" opacity="0.71"/>
+  <circle cx="1175" cy="385" r="1.8" class="s-sl star-twinkle-c" opacity="0.69" style="--star-op:0.69"/>
+  <circle cx="410" cy="590" r="1.5" class="s-sl" opacity="0.70"/>
+  <circle cx="1240" cy="580" r="2.4" class="s-sl star-twinkle-b" opacity="0.76" style="--star-op:0.76"/>
+  <circle cx="285" cy="760" r="1.5" class="s-sl" opacity="0.63"/>
+  <circle cx="1045" cy="748" r="2.3" class="s-sl" opacity="0.71"/>
+  <!-- cosmic blue bright -->
+  <circle cx="195" cy="97"  r="1.8" class="s-b star-twinkle-c" opacity="0.50" style="--star-op:0.50"/>
+  <circle cx="580" cy="340" r="1.6" class="s-b" opacity="0.44"/>
+  <circle cx="1100" cy="300" r="2.0" class="s-b star-twinkle-a" opacity="0.46" style="--star-op:0.46"/>
+  <circle cx="380" cy="640" r="1.5" class="s-b" opacity="0.42"/>
+  <circle cx="1050" cy="660" r="1.8" class="s-b star-twinkle-b" opacity="0.46" style="--star-op:0.46"/>
+  <!-- nebula violet bright -->
+  <circle cx="800" cy="80"  r="1.7" class="s-v star-twinkle-a" opacity="0.42" style="--star-op:0.42"/>
+  <circle cx="1360" cy="450" r="1.5" class="s-v" opacity="0.38"/>
+  <circle cx="240" cy="530" r="1.6" class="s-v star-twinkle-b" opacity="0.40" style="--star-op:0.40"/>
+  <circle cx="840" cy="720" r="1.9" class="s-v star-twinkle-c" opacity="0.44" style="--star-op:0.44"/>
+  <!-- cosmic pink bright -->
+  <circle cx="550" cy="110" r="1.6" class="s-pk star-twinkle-b" opacity="0.36" style="--star-op:0.36"/>
+  <circle cx="1200" cy="150" r="1.8" class="s-pk star-twinkle-a" opacity="0.38" style="--star-op:0.38"/>
+  <circle cx="700" cy="620" r="1.5" class="s-pk" opacity="0.34"/>
+  <circle cx="1380" cy="680" r="1.7" class="s-pk star-twinkle-c" opacity="0.36" style="--star-op:0.36"/>
+
+  <!-- Tiny scattered fill stars, lower section -->
+  <circle cx="155" cy="648" r="0.6" class="s-w" opacity="0.24"/>
+  <circle cx="362" cy="680" r="0.5" class="s-w" opacity="0.20"/>
+  <circle cx="595" cy="655" r="0.7" class="s-sl" opacity="0.28"/>
+  <circle cx="840" cy="692" r="0.6" class="s-b" opacity="0.18"/>
+  <circle cx="1105" cy="663" r="0.8" class="s-w" opacity="0.30"/>
+  <circle cx="1380" cy="685" r="0.5" class="s-v" opacity="0.18"/>
+  <circle cx="240" cy="820" r="0.6" class="s-w" opacity="0.19"/>
+  <circle cx="490" cy="845" r="0.8" class="s-w" opacity="0.26"/>
+  <circle cx="720" cy="830" r="0.5" class="s-sl" opacity="0.22"/>
+  <circle cx="980" cy="858" r="0.7" class="s-b" opacity="0.16"/>
+  <circle cx="1200" cy="840" r="0.6" class="s-pk" opacity="0.17"/>
+
+  <!-- Soft lens haze around select bright stars -->
+  <circle cx="455" cy="52"  r="6"  class="s-sl" opacity="0.05"/>
+  <circle cx="195" cy="97"  r="7"  class="s-b" opacity="0.05"/>
+  <circle cx="800" cy="80"  r="6"  class="s-v" opacity="0.04"/>
+  <circle cx="905" cy="408" r="8"  class="s-w" opacity="0.04"/>
+  <circle cx="1100" cy="300" r="7" class="s-b" opacity="0.04"/>
+  <circle cx="1240" cy="580" r="7" class="s-sl" opacity="0.04"/>
+  <circle cx="840" cy="720" r="7"  class="s-v" opacity="0.04"/>
+  <circle cx="550" cy="110" r="6"  class="s-pk" opacity="0.04"/>
+  <circle cx="1200" cy="150" r="7" class="s-pk" opacity="0.04"/>
+
+  <!-- ── UPPER AREA STAR CLUSTER — denser around sphere zone ── -->
+  <circle cx="620"  cy="28"  r="0.6" class="s-w" opacity="0.30"/>
+  <circle cx="715"  cy="44"  r="0.7" class="s-sl" opacity="0.32"/>
+  <circle cx="842"  cy="18"  r="0.5" class="s-w" opacity="0.26"/>
+  <circle cx="967"  cy="55"  r="0.8" class="s-b" opacity="0.20"/>
+  <circle cx="1058" cy="32"  r="0.6" class="s-v" opacity="0.18"/>
+  <circle cx="1143" cy="66"  r="0.7" class="s-w" opacity="0.28"/>
+  <circle cx="1222" cy="40"  r="0.5" class="s-pk" opacity="0.15"/>
+  <circle cx="1307" cy="58"  r="0.6" class="s-sl" opacity="0.24"/>
+  <circle cx="580"  cy="100" r="0.5" class="s-v" opacity="0.18"/>
+  <circle cx="668"  cy="78"  r="0.7" class="s-w" opacity="0.30"/>
+  <circle cx="758"  cy="115" r="0.6" class="s-b" opacity="0.20"/>
+  <circle cx="912"  cy="88"  r="0.8" class="s-sl" opacity="0.34"/>
+  <circle cx="1012" cy="102" r="0.5" class="s-pk" opacity="0.16"/>
+  <circle cx="1118" cy="90"  r="0.7" class="s-w" opacity="0.28"/>
+  <circle cx="1245" cy="112" r="0.6" class="s-v" opacity="0.18"/>
+  <circle cx="1365" cy="78"  r="0.5" class="s-b" opacity="0.17"/>
+  <!-- Upper center + left supplement -->
+  <circle cx="105"  cy="48"  r="0.6" class="s-w" opacity="0.24"/>
+  <circle cx="248"  cy="30"  r="0.7" class="s-sl" opacity="0.26"/>
+  <circle cx="388"  cy="62"  r="0.5" class="s-v" opacity="0.16"/>
+  <circle cx="472"  cy="22"  r="0.6" class="s-w" opacity="0.22"/>
+  <!-- Mid-bright upper cluster -->
+  <circle cx="630"  cy="128" r="1.1" class="s-sl" opacity="0.52"/>
+  <circle cx="740"  cy="95"  r="1.3" class="s-w" opacity="0.58"/>
+  <circle cx="875"  cy="140" r="1.0" class="s-b" opacity="0.35"/>
+  <circle cx="965"  cy="115" r="1.2" class="s-w" opacity="0.55"/>
+  <circle cx="1065" cy="145" r="1.0" class="s-sl" opacity="0.48"/>
+  <circle cx="1152" cy="122" r="1.1" class="s-v" opacity="0.30"/>
+  <circle cx="1258" cy="138" r="1.2" class="s-w" opacity="0.50"/>
+  <circle cx="680"  cy="55"  r="1.0" class="s-b" opacity="0.32"/>
+  <circle cx="820"  cy="62"  r="1.4" class="s-sl" opacity="0.60"/>
+  <circle cx="1095" cy="58"  r="1.1" class="s-pk" opacity="0.28"/>
+  <circle cx="1350" cy="115" r="1.0" class="s-w" opacity="0.46"/>
+  <!-- Additional mid-range upper fill (y 160–300) -->
+  <circle cx="590"  cy="178" r="1.0" class="s-v" opacity="0.28"/>
+  <circle cx="685"  cy="202" r="1.2" class="s-w" opacity="0.50"/>
+  <circle cx="778"  cy="165" r="1.0" class="s-sl" opacity="0.46"/>
+  <circle cx="880"  cy="200" r="1.1" class="s-b" opacity="0.32"/>
+  <circle cx="995"  cy="168" r="1.3" class="s-w" opacity="0.56"/>
+  <circle cx="1095" cy="195" r="1.0" class="s-sl" opacity="0.44"/>
+  <circle cx="1175" cy="165" r="1.1" class="s-v" opacity="0.28"/>
+  <circle cx="1260" cy="198" r="1.0" class="s-w" opacity="0.48"/>
+  <circle cx="615"  cy="242" r="1.0" class="s-b" opacity="0.30"/>
+  <circle cx="720"  cy="265" r="1.1" class="s-pk" opacity="0.26"/>
+  <circle cx="840"  cy="245" r="1.2" class="s-w" opacity="0.52"/>
+  <circle cx="940"  cy="280" r="1.0" class="s-sl" opacity="0.46"/>
+  <circle cx="1040" cy="260" r="1.1" class="s-b" opacity="0.30"/>
+  <circle cx="1150" cy="248" r="1.0" class="s-w" opacity="0.48"/>
+  <circle cx="1310" cy="240" r="1.2" class="s-sl" opacity="0.52"/>
+  <!-- Brighter anchor stars — upper right, near sphere zone — with twinkle -->
+  <circle cx="782"  cy="48"  r="1.9" class="s-sl star-twinkle-a" opacity="0.72" style="--star-op:0.72"/>
+  <circle cx="932"  cy="72"  r="2.2" class="s-w" opacity="0.78"/>
+  <circle cx="1070" cy="44"  r="1.7" class="s-b star-twinkle-c" opacity="0.58" style="--star-op:0.58"/>
+  <circle cx="1188" cy="84"  r="2.0" class="s-sl star-twinkle-b" opacity="0.74" style="--star-op:0.74"/>
+  <circle cx="860"  cy="118" r="1.8" class="s-v star-twinkle-a" opacity="0.55" style="--star-op:0.55"/>
+  <circle cx="1010" cy="90"  r="2.4" class="s-w" opacity="0.82"/>
+  <circle cx="660"  cy="80"  r="1.6" class="s-pk star-twinkle-b" opacity="0.48" style="--star-op:0.48"/>
+  <circle cx="1300" cy="96"  r="1.8" class="s-w" opacity="0.68"/>
+  <!-- Lens halos for bright stars -->
+  <circle cx="932"  cy="72"  r="9"  class="s-w" opacity="0.04"/>
+  <circle cx="1010" cy="90"  r="10" class="s-sl" opacity="0.04"/>
+  <circle cx="782"  cy="48"  r="7"  class="s-sl" opacity="0.04"/>
+  <circle cx="1070" cy="44"  r="7"  class="s-b" opacity="0.04"/>
+  <circle cx="860"  cy="118" r="7"  class="s-v" opacity="0.04"/>
+</svg>
+
 <div class="shell">
 
   <!-- ── SIDEBAR ────────────────────────────────────────────────────────── -->
   <aside class="rail">
     <a class="brandblock" href="./">
-      <!-- Sphere mark: fine engraved globe lines, accent stroke -->
+      <!-- Sphere mark: strokes use theme accent vars for theme-awareness -->
       <svg class="mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1.15">
-        <circle cx="16" cy="16" r="12.5"/>
-        <ellipse cx="16" cy="16" rx="5.2" ry="12.5"/>
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.6"/>
+        <circle cx="16" cy="16" r="12.5" stroke="var(--accent)"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="12.5" stroke="var(--accent-blue)"/>
+        <ellipse cx="16" cy="16" rx="12.5" ry="4.6" stroke="var(--accent-violet)"/>
       </svg>
       <span class="brand-name">Esfera<br>Research</span>
     </a>
 
     <div class="lang">
-      <span class="on">EN</span> &middot; <a href="ko/">&#54620;&#44397;&#50612;</a>
-      &middot; <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light or dark theme"></button>
+      <span class="on">EN</span> &middot; <a href="ko/">&#54620;&#44397;&#50612;</a> &middot; <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" type="button">
+        <span class="tog-icon tog-sun" aria-hidden="true">&#9728;</span>
+        <span class="tog-icon tog-moon" aria-hidden="true">&#9790;</span>
+      </button>
     </div>
 
     <div class="rail-sep"></div>
@@ -691,20 +1122,34 @@ a:focus-visible {
   <!-- ── MAIN ─────────────────────────────────────────────────────────── -->
   <main class="main">
 
-    <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════
-         Dark surface, Archivo Black uppercase, ONE accent fill on "NO".
-         Transitions into warm-serif editorial below via the accent bar.
-    ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ══ POSTER HERO BAND ══════════════════════════════════════════════ -->
     <section class="hero-band" aria-label="Introduction">
 
-      <!-- Faint decorative sphere — D-b treatment, behind the headline -->
-      <svg class="hero-sphere-bg" width="640" height="640" viewBox="0 0 700 700" fill="none" aria-hidden="true">
-        <circle cx="350" cy="350" r="338" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="currentColor" stroke-width="2"/>
-        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="currentColor" stroke-width="1" opacity="0.55"/>
-        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="currentColor" stroke-width="1" opacity="0.55"/>
+      <!-- Wireframe celestial sphere — strokes use theme accent vars.
+           Meridian = accent-blue, equator = accent-violet, latitude = accent-pink,
+           outer circle = accent (main). All clearly visible on pale bg in light
+           (deepened accents: #3a52d6, #7a3fd0, #cf3f86 on #eef0f8). -->
+      <svg class="hero-sphere-bg" viewBox="0 0 700 700" fill="none" aria-hidden="true">
+        <!-- Outer circle: main accent -->
+        <circle cx="350" cy="350" r="338" stroke="var(--accent)" stroke-width="1.8" opacity="0.45"/>
+        <!-- Primary meridian: accent-blue -->
+        <ellipse cx="350" cy="350" rx="128" ry="338" stroke="var(--accent-blue)" stroke-width="2.0" opacity="0.55"/>
+        <!-- Equator: accent-violet -->
+        <ellipse cx="350" cy="350" rx="338" ry="118" stroke="var(--accent-violet)" stroke-width="2.0" opacity="0.55"/>
+        <!-- Wide secondary meridian: accent -->
+        <ellipse cx="350" cy="350" rx="255" ry="338" stroke="var(--accent)" stroke-width="1.2" opacity="0.28"/>
+        <!-- Secondary latitude band: accent -->
+        <ellipse cx="350" cy="350" rx="338" ry="236" stroke="var(--accent)" stroke-width="1.2" opacity="0.28"/>
+        <!-- Pink latitude ring: accent-pink -->
+        <ellipse cx="350" cy="350" rx="338" ry="58" stroke="var(--accent-pink)" stroke-width="1.4" opacity="0.35"/>
+        <!-- Third meridian: accent-blue lower opacity -->
+        <ellipse cx="350" cy="350" rx="75" ry="338" stroke="var(--accent-blue)" stroke-width="1.0" opacity="0.22"/>
+        <!-- Pole dots: accent -->
+        <circle cx="350" cy="12" r="3" fill="var(--accent)" opacity="0.40"/>
+        <circle cx="350" cy="688" r="3" fill="var(--accent)" opacity="0.40"/>
       </svg>
+
+      <div class="hero-upper-spacer" aria-hidden="true"></div>
 
       <span class="hero-eyebrow">Esfera Research &mdash; Est. 2026</span>
 
@@ -722,9 +1167,7 @@ a:focus-visible {
     <!-- Accent transition bar: poster → editorial -->
     <span class="hero-accent-bar" role="separator" aria-hidden="true"></span>
 
-    <!-- ══ EDITORIAL BODY ══════════════════════════════════════════════
-         Warm-serif base preserved exactly from fluid/index.html.
-    ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ══ EDITORIAL BODY ════════════════════════════════════════════════ -->
     <div class="editorial">
 
       <!-- PULL QUESTION -->
@@ -741,7 +1184,7 @@ a:focus-visible {
 
       <!-- ELNATH -->
       <section class="elnath-section" aria-label="Flagship project">
-        <h2 class="label">The Flagship</h2>
+        <h2 class="label accent-blue">The Flagship</h2>
         <div class="elnath-card">
           <h2 class="display">Elnath</h2>
           <p><span class="elnath-name">Elnath</span> is the agent we build toward: an autonomous personal partner a non-developer can simply talk to and hand their day &mdash; <em>&#8220;sort out my projects, schedule, and what I need to check; don&#8217;t let anything important slip.&#8221;</em> It does the safe work on its own, asks only at the moments that truly carry risk, and is honest when it fails.</p>
@@ -780,7 +1223,6 @@ a:focus-visible {
 
       <hr class="foot-rule">
       <p class="sig">
-        <span class="sig-dot" aria-hidden="true"></span>
         Day zero &middot; building in the open &middot; 2026
       </p>
 
@@ -790,6 +1232,27 @@ a:focus-visible {
 
 </div><!-- /.shell -->
 
-<script>(function(){var b=document.getElementById('themeToggle');function cur(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}function paint(){b.textContent=cur()==='dark'?'☀ light':'☾ dark';}b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('esfera-theme',n);paint();});paint();})();</script>
+<script>
+  (function () {
+    var btn = document.getElementById('themeToggle');
+    var root = document.documentElement;
+
+    function isDark() {
+      var t = root.dataset.theme;
+      if (t === 'dark') return true;
+      if (t === 'light') return false;
+      // No data-theme set — check OS
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    btn.addEventListener('click', function () {
+      var goingDark = !isDark();
+      var next = goingDark ? 'dark' : 'light';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch(e) {}
+    });
+  })();
+</script>
+
 </body>
 </html>

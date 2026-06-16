@@ -1,8 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <circle cx="16" cy="16" r="15" fill="#e0701c"/>
-  <g fill="none" stroke="#ffffff" stroke-width="1.4" opacity="0.92">
-    <circle cx="16" cy="16" r="10.5"/>
-    <ellipse cx="16" cy="16" rx="4.2" ry="10.5"/>
-    <ellipse cx="16" cy="16" rx="10.5" ry="4.2"/>
-  </g>
+  <defs>
+    <radialGradient id="void" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#141622"/>
+      <stop offset="100%" stop-color="#0a0b12"/>
+    </radialGradient>
+  </defs>
+  <!-- void disc -->
+  <circle cx="16" cy="16" r="15" fill="url(#void)"/>
+  <!-- starlight dots in void corners -->
+  <circle cx="8" cy="9" r="0.6" fill="#c4cdf0" opacity="0.7"/>
+  <circle cx="24" cy="23" r="0.5" fill="#c4cdf0" opacity="0.5"/>
+  <!-- outer circle: starlight -->
+  <circle cx="16" cy="16" r="10.5" fill="none" stroke="#c4cdf0" stroke-width="1.4" opacity="0.9"/>
+  <!-- meridian (vertical ellipse): blue -->
+  <ellipse cx="16" cy="16" rx="4.2" ry="10.5" fill="none" stroke="#5b7cff" stroke-width="1.4" opacity="0.95"/>
+  <!-- equator (horizontal ellipse): violet -->
+  <ellipse cx="16" cy="16" rx="10.5" ry="4.2" fill="none" stroke="#9d5cff" stroke-width="1.4" opacity="0.95"/>
 </svg>

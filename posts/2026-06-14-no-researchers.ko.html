@@ -13,67 +13,153 @@
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 
-<!-- No-FOUC theme: must run before CSS -->
-<script>(function(){var t=localStorage.getItem('esfera-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+<!-- No-FOUC: read localStorage theme and apply before CSS loads -->
+<script>
+  (function(){
+    var t = localStorage.getItem('theme');
+    if (t === 'dark' || t === 'light') {
+      document.documentElement.dataset.theme = t;
+    }
+  })();
+</script>
 
-<!-- Google Fonts -->
+<!-- Google Fonts: Fraunces + Newsreader + IBM Plex Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
-/* ── TOKENS ─────────────────────────────────────────────────────────── */
+
+/* ======================================================================
+   ESFERA — Cosmic C2: Starlight + Nebula — Light + Dark pair
+   ====================================================================== */
+
+/* ── LIGHT TOKENS — default :root (dawn sky) ── */
 :root {
-  --bg:        #f6f1e8;
-  --bg-alt:    #efe9db;
-  --surface:   #f9f5ef;
-  --ink:       #2a241d;
-  --ink-mid:   #5a4e43;
-  --ink-faint: #9a8e82;
-  --accent:    #d5560a;
-  --rule:      #ccc4b7;
+  --bg:         #eef0f8;
+  --bg-alt:     #e4e8f3;
+  --surface:    #f7f8fc;
+  --ink:        #181a2b;
+  --ink-mid:    #51566e;
+  --ink-faint:  #888ea6;
+  --rule:       #d5d9e8;
 
-  --f-serif: "Fraunces", Georgia, "Times New Roman", serif;
-  --f-body:  "Newsreader", Georgia, "Times New Roman", serif;
-  --f-mono:  "IBM Plex Mono", "Courier New", monospace;
+  --accent:        #4a57a6;
+  --accent-blue:   #3a52d6;
+  --accent-violet: #7a3fd0;
+  --accent-pink:   #cf3f86;
 
-  --rail-w:   12rem;
-  --pad-side: clamp(1.4rem, 4vw, 6rem);
-  --pad-top:  clamp(2.8rem, 5.5vw, 5.5rem);
-  --gap:      clamp(2.8rem, 5vw, 5rem);
-  --prose-w:  66ch;
+  --knockout-text: #eef0f8;
+
+  --star-base-white:  #181a2b;
+  --star-base-sl:     #4a57a6;
+  --star-base-blue:   #3a52d6;
+  --star-base-violet: #7a3fd0;
+  --star-base-pink:   #cf3f86;
+  --star-opacity-scale: 0.13;
+  --starfield-opacity: 0.18;
+  --nebula-opacity: 0.07;
+
+  --f-poster: "Archivo Black", "Arial Black", sans-serif;
+  --f-serif:  "Fraunces", Georgia, "Times New Roman", serif;
+  --f-body:   "Newsreader", Georgia, "Times New Roman", serif;
+  --f-mono:   "IBM Plex Mono", "Courier New", monospace;
+
+  --rail-w:    12rem;
+  --pad-side:  clamp(1.4rem, 4vw, 6rem);
+  --pad-top:   clamp(2.8rem, 5.5vw, 5.5rem);
+  --gap:       clamp(2.8rem, 5vw, 5rem);
+  --prose-w:   66ch;
 }
 
+/* ── DARK TOKENS — auto (OS preference) ── */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #181410;
-    --bg-alt:    #1f1b17;
-    --surface:   #231f1b;
-    --ink:       #ede6da;
-    --ink-mid:   #a49a8e;
-    --ink-faint: #4a4440;
-    --accent:    #f58a26;
-    --rule:      #302a24;
+    --bg:         #0a0b12;
+    --bg-alt:     #11131d;
+    --surface:    #141622;
+    --ink:        #eef1fa;
+    --ink-mid:    #8c92a8;
+    --ink-faint:  #4e5364;
+    --rule:       #20232f;
+
+    --accent:        #c4cdf0;
+    --accent-blue:   #5b7cff;
+    --accent-violet: #9d5cff;
+    --accent-pink:   #ff5fa8;
+
+    --knockout-text: #0a0b12;
+
+    --star-base-white:  #eef1fa;
+    --star-base-sl:     #c4cdf0;
+    --star-base-blue:   #5b7cff;
+    --star-base-violet: #9d5cff;
+    --star-base-pink:   #ff5fa8;
+    --starfield-opacity: 1;
+    --nebula-opacity: 1;
   }
 }
+
+/* ── DARK TOKENS — manual force dark ── */
 :root[data-theme="dark"] {
-  --bg:        #181410;
-  --bg-alt:    #1f1b17;
-  --surface:   #231f1b;
-  --ink:       #ede6da;
-  --ink-mid:   #a49a8e;
-  --ink-faint: #4a4440;
-  --accent:    #f58a26;
-  --rule:      #302a24;
+  --bg:         #0a0b12;
+  --bg-alt:     #11131d;
+  --surface:    #141622;
+  --ink:        #eef1fa;
+  --ink-mid:    #8c92a8;
+  --ink-faint:  #4e5364;
+  --rule:       #20232f;
+
+  --accent:        #c4cdf0;
+  --accent-blue:   #5b7cff;
+  --accent-violet: #9d5cff;
+  --accent-pink:   #ff5fa8;
+
+  --knockout-text: #0a0b12;
+
+  --star-base-white:  #eef1fa;
+  --star-base-sl:     #c4cdf0;
+  --star-base-blue:   #5b7cff;
+  --star-base-violet: #9d5cff;
+  --star-base-pink:   #ff5fa8;
+  --starfield-opacity: 1;
+  --nebula-opacity: 1;
 }
 
-/* ── RESET ───────────────────────────────────────────────────────────── */
+/* ── LIGHT TOKENS — manual force light ── */
+:root[data-theme="light"] {
+  --bg:         #eef0f8;
+  --bg-alt:     #e4e8f3;
+  --surface:    #f7f8fc;
+  --ink:        #181a2b;
+  --ink-mid:    #51566e;
+  --ink-faint:  #888ea6;
+  --rule:       #d5d9e8;
+
+  --accent:        #4a57a6;
+  --accent-blue:   #3a52d6;
+  --accent-violet: #7a3fd0;
+  --accent-pink:   #cf3f86;
+
+  --knockout-text: #eef0f8;
+
+  --star-base-white:  #181a2b;
+  --star-base-sl:     #4a57a6;
+  --star-base-blue:   #3a52d6;
+  --star-base-violet: #7a3fd0;
+  --star-base-pink:   #cf3f86;
+  --starfield-opacity: 0.18;
+  --nebula-opacity: 0.07;
+}
+
+/* --- RESET ------------------------------------------------------------ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
   font-size: clamp(15px, calc(0.45vw + 13px), 22px);
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -85,22 +171,108 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100%;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
 img, svg { display: block; }
 
-/* ── SHELL ───────────────────────────────────────────────────────────── */
+/* --- STARFIELD (reading-page: quieter — half opacity) ----------------- */
+#starfield {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: calc(var(--starfield-opacity) * 0.5);
+  transition: opacity 0.3s ease;
+}
+
+.s-w  { fill: var(--star-base-white); }
+.s-sl { fill: var(--star-base-sl); }
+.s-b  { fill: var(--star-base-blue); }
+.s-v  { fill: var(--star-base-violet); }
+.s-pk { fill: var(--star-base-pink); }
+
+@keyframes twinkle-a {
+  0%, 100% { opacity: var(--star-op, 0.4); }
+  50%       { opacity: calc(var(--star-op, 0.4) * 0.45); }
+}
+@keyframes twinkle-b {
+  0%, 100% { opacity: var(--star-op, 0.5); }
+  33%       { opacity: calc(var(--star-op, 0.5) * 0.35); }
+  66%       { opacity: calc(var(--star-op, 0.5) * 0.8); }
+}
+@keyframes twinkle-c {
+  0%, 100% { opacity: var(--star-op, 0.6); }
+  40%       { opacity: calc(var(--star-op, 0.6) * 0.5); }
+}
+.star-twinkle-a { animation: twinkle-a 3.8s ease-in-out infinite; }
+.star-twinkle-b { animation: twinkle-b 5.1s ease-in-out infinite; }
+.star-twinkle-c { animation: twinkle-c 4.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .star-twinkle-a,
+  .star-twinkle-b,
+  .star-twinkle-c { animation: none; }
+}
+
+/* --- THEME TOGGLE ---------------------------------------------------- */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.72rem;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2rem;
+  cursor: pointer;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.07em;
+  color: var(--ink-faint);
+  transition: border-color 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--ink-mid);
+}
+.theme-toggle:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.theme-toggle .tog-icon { font-style: normal; font-size: 0.9em; }
+
+.tog-sun  { display: none; }
+.tog-moon { display: inline; }
+
+:root[data-theme="dark"] .tog-sun  { display: inline; }
+:root[data-theme="dark"] .tog-moon { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tog-sun  { display: inline; }
+  :root:not([data-theme="light"]) .tog-moon { display: none; }
+}
+
+/* --- SHELL ------------------------------------------------------------ */
 .shell {
   display: grid;
   grid-template-columns: var(--rail-w) 1fr;
   width: min(94vw, 88rem);
   margin-inline: auto;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
-/* ── RAIL ────────────────────────────────────────────────────────────── */
+/* --- RAIL ------------------------------------------------------------- */
 .rail {
   position: sticky;
   top: 0;
@@ -109,7 +281,7 @@ img, svg { display: block; }
   flex-direction: column;
   padding: var(--pad-top) 1.5rem var(--pad-top) 0;
   border-right: 1px solid var(--rule);
-  background: var(--bg);
+  background: transparent;
   overflow: hidden;
   z-index: 20;
 }
@@ -121,13 +293,13 @@ img, svg { display: block; }
   color: var(--ink);
 }
 
+/* Sphere mark: strokes use theme accent vars */
 .mark {
   width: 1.55rem;
   height: 1.55rem;
   flex-shrink: 0;
-  stroke: var(--accent);
   fill: none;
-  opacity: 0.88;
+  opacity: 0.9;
 }
 
 .brand-name {
@@ -151,24 +323,9 @@ img, svg { display: block; }
   gap: 0.35rem;
   flex-wrap: wrap;
 }
-.lang-row .on { color: var(--accent); }
+.lang-row .on { color: var(--accent-blue); }
 .lang-row a { color: var(--ink-faint); }
 .lang-row a:hover { color: var(--ink-mid); }
-
-.theme-toggle {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: var(--f-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.05em;
-  color: var(--ink-faint);
-  cursor: pointer;
-  line-height: 1;
-  transition: color 0.14s ease;
-}
-.theme-toggle:hover { color: var(--accent); }
-.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .rail-sep {
   width: 1.5rem;
@@ -204,14 +361,16 @@ img, svg { display: block; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-faint);
+  margin-bottom: 0.6rem;
 }
 
-/* ── MAIN ────────────────────────────────────────────────────────────── */
+/* --- MAIN ------------------------------------------------------------- */
 .main {
   padding: var(--pad-top) var(--pad-side) calc(var(--pad-top) * 1.6);
+  min-width: 0;
 }
 
-/* ── ARTICLE ─────────────────────────────────────────────────────────── */
+/* --- ARTICLE ---------------------------------------------------------- */
 .post {
   max-width: var(--prose-w);
 }
@@ -241,16 +400,20 @@ img, svg { display: block; }
   line-height: 1.15;
   color: var(--ink);
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
-  /* Korean title is longer — slightly tighter sizing is intentional */
   word-break: keep-all;
 }
 
-/* Accent top-rule under the title */
+/* Cosmic accent rule under title — gradient hairline */
 .title-rule {
   border: none;
-  border-top: 2.5px solid var(--accent);
-  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  height: 2px;
   width: 3.5rem;
+  background: linear-gradient(90deg,
+    var(--accent-blue) 0%,
+    var(--accent-violet) 60%,
+    var(--accent-pink) 100%);
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  opacity: 0.8;
 }
 
 /* Newsreader body prose */
@@ -287,17 +450,17 @@ img, svg { display: block; }
   color: var(--ink);
 }
 
-/* Links */
+/* Links — cosmic blue accent */
 .post a {
-  color: var(--accent);
-  border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  color: var(--accent-blue);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-blue) 35%, transparent);
   transition: border-color 0.14s ease;
 }
-.post a:hover { border-color: var(--accent); }
+.post a:hover { border-color: var(--accent-blue); }
 
-/* Blockquote / pull-quote */
+/* Blockquote / pull-quote — cosmic violet left rule */
 .post blockquote {
-  border-left: 2.5px solid var(--accent);
+  border-left: 2.5px solid var(--accent-violet);
   padding-left: 1.25rem;
   margin: clamp(1.5rem, 3vw, 2.5rem) 0;
   font-family: var(--f-serif);
@@ -312,10 +475,10 @@ img, svg { display: block; }
 .post blockquote em {
   font-style: normal;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-violet);
 }
 
-/* Unordered list */
+/* Unordered list — cosmic accent dashes */
 .post ul {
   list-style: none;
   display: flex;
@@ -336,7 +499,7 @@ img, svg { display: block; }
   content: '—';
   position: absolute;
   left: 0;
-  color: var(--accent);
+  color: var(--accent-violet);
   font-family: var(--f-serif);
   font-weight: 300;
 }
@@ -344,7 +507,8 @@ img, svg { display: block; }
 /* Section rule */
 .section-rule {
   border: none;
-  border-top: 1px solid var(--rule);
+  height: 1px;
+  background: var(--rule);
   margin: clamp(1.8rem, 3.5vw, 3rem) 0;
 }
 
@@ -359,7 +523,8 @@ img, svg { display: block; }
 /* Footer rule + sig */
 .foot-rule {
   border: none;
-  border-top: 1px solid var(--rule);
+  height: 1px;
+  background: var(--rule);
   margin-top: var(--gap);
   margin-bottom: 1.25rem;
 }
@@ -378,14 +543,20 @@ img, svg { display: block; }
   width: 0.32rem;
   height: 0.32rem;
   border-radius: 50%;
-  background: var(--accent);
   flex-shrink: 0;
+  opacity: 0.65;
+}
+.sig-dot:nth-child(1) { background: var(--accent-blue); }
+.sig-dot:nth-child(3) { background: var(--accent-violet); }
+.sig-dot:nth-child(5) { background: var(--accent-pink); }
+
+/* --- FOCUS ------------------------------------------------------------ */
+a:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
 }
 
-/* ── FOCUS ───────────────────────────────────────────────────────────── */
-a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* ── MOBILE ──────────────────────────────────────────────────────────── */
+/* --- MOBILE ----------------------------------------------------------- */
 @media (max-width: 720px) {
   .shell {
     grid-template-columns: 1fr;
@@ -411,22 +582,84 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     padding-top: 0.6rem;
     border-top: 1px solid var(--rule);
   }
+  .theme-toggle { margin-left: auto; }
   .main {
     padding-left: clamp(1rem, 4vw, 2.5rem);
     padding-right: clamp(1rem, 4vw, 2.5rem);
   }
 }
+
 </style>
 </head>
 <body>
+
+<!-- Subtle starfield — reading page (half opacity via CSS) -->
+<svg id="starfield" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <circle cx="47"  cy="83"  r="0.6" class="s-w" opacity="0.28"/>
+  <circle cx="219" cy="170" r="0.7" class="s-w" opacity="0.30"/>
+  <circle cx="512" cy="38"  r="0.8" class="s-w" opacity="0.32"/>
+  <circle cx="688" cy="145" r="0.6" class="s-w" opacity="0.27"/>
+  <circle cx="943" cy="108" r="0.6" class="s-w" opacity="0.29"/>
+  <circle cx="1035" cy="72" r="0.8" class="s-w" opacity="0.33"/>
+  <circle cx="1318" cy="95" r="0.7" class="s-w" opacity="0.31"/>
+  <circle cx="88"  cy="248" r="0.6" class="s-w" opacity="0.23"/>
+  <circle cx="175" cy="315" r="0.8" class="s-w" opacity="0.35"/>
+  <circle cx="349" cy="340" r="0.6" class="s-w" opacity="0.28"/>
+  <circle cx="613" cy="285" r="0.8" class="s-w" opacity="0.36"/>
+  <circle cx="138" cy="41"  r="0.5" class="s-b" opacity="0.16"/>
+  <circle cx="302" cy="55"  r="0.5" class="s-b" opacity="0.14"/>
+  <circle cx="601" cy="88"  r="0.5" class="s-b" opacity="0.15"/>
+  <circle cx="774" cy="62"  r="0.7" class="s-b" opacity="0.17"/>
+  <circle cx="410" cy="120" r="0.6" class="s-v" opacity="0.14"/>
+  <circle cx="855" cy="30"  r="0.5" class="s-v" opacity="0.13"/>
+  <circle cx="1207" cy="44" r="0.6" class="s-v" opacity="0.15"/>
+  <circle cx="330" cy="90"  r="0.5" class="s-pk" opacity="0.12"/>
+  <circle cx="650" cy="55"  r="0.6" class="s-pk" opacity="0.13"/>
+  <circle cx="990" cy="130" r="0.5" class="s-pk" opacity="0.12"/>
+  <circle cx="73"  cy="185" r="1.0" class="s-w" opacity="0.45"/>
+  <circle cx="253" cy="142" r="1.0" class="s-w" opacity="0.42"/>
+  <circle cx="378" cy="198" r="1.3" class="s-w" opacity="0.48"/>
+  <circle cx="557" cy="210" r="1.1" class="s-w" opacity="0.46"/>
+  <circle cx="643" cy="175" r="1.2" class="s-w" opacity="0.52"/>
+  <circle cx="820" cy="188" r="1.3" class="s-w" opacity="0.47"/>
+  <circle cx="910" cy="150" r="1.0" class="s-w" opacity="0.43"/>
+  <circle cx="1088" cy="172" r="1.2" class="s-w" opacity="0.45"/>
+  <circle cx="161" cy="225" r="1.2" class="s-sl" opacity="0.50"/>
+  <circle cx="469" cy="162" r="1.0" class="s-sl" opacity="0.44"/>
+  <circle cx="731" cy="230" r="1.0" class="s-sl" opacity="0.40"/>
+  <circle cx="999" cy="215" r="1.1" class="s-sl" opacity="0.51"/>
+  <circle cx="330" cy="155" r="1.1" class="s-b" opacity="0.28"/>
+  <circle cx="725" cy="195" r="1.0" class="s-b" opacity="0.25"/>
+  <circle cx="180" cy="195" r="1.0" class="s-v" opacity="0.24"/>
+  <circle cx="580" cy="175" r="1.1" class="s-v" opacity="0.25"/>
+  <circle cx="270" cy="210" r="1.0" class="s-pk" opacity="0.20"/>
+  <circle cx="650" cy="245" r="1.1" class="s-pk" opacity="0.22"/>
+  <circle cx="455" cy="52"  r="2.2" class="s-sl star-twinkle-a" opacity="0.68" style="--star-op:0.68"/>
+  <circle cx="1290" cy="88" r="1.7" class="s-sl" opacity="0.73"/>
+  <circle cx="195" cy="97"  r="1.8" class="s-b star-twinkle-c" opacity="0.50" style="--star-op:0.50"/>
+  <circle cx="800" cy="80"  r="1.7" class="s-v star-twinkle-a" opacity="0.42" style="--star-op:0.42"/>
+  <circle cx="550" cy="110" r="1.6" class="s-pk star-twinkle-b" opacity="0.36" style="--star-op:0.36"/>
+  <circle cx="720" cy="108" r="1.5" class="s-w star-twinkle-b" opacity="0.70" style="--star-op:0.70"/>
+  <circle cx="155" cy="648" r="0.6" class="s-w" opacity="0.24"/>
+  <circle cx="595" cy="655" r="0.7" class="s-sl" opacity="0.28"/>
+  <circle cx="1105" cy="663" r="0.8" class="s-w" opacity="0.30"/>
+  <circle cx="240" cy="820" r="0.6" class="s-w" opacity="0.19"/>
+  <circle cx="490" cy="845" r="0.8" class="s-w" opacity="0.26"/>
+  <circle cx="720" cy="830" r="0.5" class="s-sl" opacity="0.22"/>
+  <circle cx="455" cy="52"  r="6"  class="s-sl" opacity="0.05"/>
+  <circle cx="195" cy="97"  r="7"  class="s-b" opacity="0.05"/>
+  <circle cx="800" cy="80"  r="6"  class="s-v" opacity="0.04"/>
+</svg>
+
 <div class="shell">
 
   <aside class="rail">
     <a class="brandblock" href="../ko/">
+      <!-- Sphere mark: strokes use theme accent vars -->
       <svg class="mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" stroke-width="1.15">
-        <circle cx="16" cy="16" r="12.5"/>
-        <ellipse cx="16" cy="16" rx="5.2" ry="12.5"/>
-        <ellipse cx="16" cy="16" rx="12.5" ry="4.6"/>
+        <circle cx="16" cy="16" r="12.5" stroke="var(--accent)"/>
+        <ellipse cx="16" cy="16" rx="5.2" ry="12.5" stroke="var(--accent-blue)"/>
+        <ellipse cx="16" cy="16" rx="12.5" ry="4.6" stroke="var(--accent-violet)"/>
       </svg>
       <span class="brand-name">Esfera<br>Research</span>
     </a>
@@ -436,7 +669,10 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
       &middot;
       <span class="on">한국어</span>
       &middot;
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="라이트/다크 테마 전환"></button>
+      <button class="theme-toggle" id="themeToggle" aria-label="라이트/다크 테마 전환" type="button">
+        <span class="tog-icon tog-sun" aria-hidden="true">&#9728;</span>
+        <span class="tog-icon tog-moon" aria-hidden="true">&#9790;</span>
+      </button>
     </div>
 
     <div class="rail-sep"></div>
@@ -498,13 +734,36 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     <hr class="foot-rule">
     <p class="sig">
       <span class="sig-dot" aria-hidden="true"></span>
-      Day zero &middot; building in the open &middot; 2026
+      Day zero
+      <span class="sig-dot" aria-hidden="true"></span>
+      building in the open
+      <span class="sig-dot" aria-hidden="true"></span>
+      2026
     </p>
 
   </main>
 
 </div>
 
-<script>(function(){var b=document.getElementById('themeToggle');function cur(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}function paint(){b.textContent=cur()==='dark'?'☀ light':'☾ dark';}b.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('esfera-theme',n);paint();});paint();})();</script>
+<script>
+  (function () {
+    var btn = document.getElementById('themeToggle');
+    var root = document.documentElement;
+
+    function isDark() {
+      var t = root.dataset.theme;
+      if (t === 'dark') return true;
+      if (t === 'light') return false;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    btn.addEventListener('click', function () {
+      var goingDark = !isDark();
+      var next = goingDark ? 'dark' : 'light';
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch(e) {}
+    });
+  })();
+</script>
 </body>
 </html>
